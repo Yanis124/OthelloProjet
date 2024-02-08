@@ -1,18 +1,14 @@
 import pygame
-from constants import *
-from board import GridDrawer
+from src.constants import *
+from src.grid.board import Grid
 
 def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    #screen.fill(GRID_COLOR)
     pygame.display.set_caption(TITLE)
     
-    gridBoard = GridDrawer(8, 8, 100, (SCREEN_WIDTH, SCREEN_HEIGHT), screen)
-    gridBoard.init_grid()
+    gridBoard = Grid(GRID_WIDTH, GRID_HEIGHT, 100, (SCREEN_WIDTH, SCREEN_HEIGHT), screen)
     pygame.display.flip()
     
-    
-
     running = True
 
     while running:
