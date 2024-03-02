@@ -10,19 +10,21 @@ class Grid:
         Args:
             canvas : represente the element where the grid will be drawn
         """
+      
         self.canvas = canvas
         self.text_id_first_player = None
         self.text_id_second_player = None
 
         self.current_player = None
-        
+        self.state = [[None for _ in range(8)] for _ in range(8)]  # 8x8 state matrix initialized to None
         self.init_grid()
+        self.initialize_game() 
         self.draw_circle_counter() #draw the two circles that represent the number of circle for each player
         self.init_circle_counter() #draw the number that represent the number of circle for each player
   
         self.canvas.bind('<Button-1>', self.on_canvas_click)
 
-        self.state = [[None for _ in range(8)] for _ in range(8)]  # 8x8 state matrix initialized to None
+       
 
      
         
@@ -39,6 +41,20 @@ class Grid:
                 y1 = y0 + cell_height
                 self.canvas.create_rectangle(x0, y0, x1, y1, fill = GRID_COLOR, outline = BORDER_COLOR)
 
+    def initialize_game(self):
+        """config de depart"""
+        mid = len(self.state) // 2
+        self.state[mid-1][mid-1] = "white"
+        self.state[mid-1][mid] = "black"
+        self.state[mid][mid-1] = "black"
+        self.state[mid][mid] = "white"
+
+        # draw on the canva
+        self.place_piece(mid-1, mid-1, "white")
+        self.place_piece(mid-1, mid, "black")
+        self.place_piece(mid, mid-1, "black")
+        self.place_piece(mid, mid, "white")
+     
 
     def draw_circle_counter(self):
         """ draw the circle counter """
