@@ -22,6 +22,8 @@ class Grid:
   
         self.canvas.bind('<Button-1>', self.on_canvas_click)
 
+        self.state = [[None for _ in range(8)] for _ in range(8)]  # 8x8 state matrix initialized to None
+
      
         
     def init_grid(self):
@@ -71,16 +73,40 @@ class Grid:
         """converts pixels coordinates to grill cell coordinates"""
         row = y // SQUARE_SIZE
         col = x // SQUARE_SIZE
-        return row, col
+        return int(row), int(col)
+
+    def is_valid_move(self, row, col, player_color):
+        if self.state[row][col] is not None:  # the cell isnt empty
+            return False
+
+        # verif haut
+        i = row - 1
+        found_opposite = False
+        while i >= 0:
+            if self.state[i][col] is None:  
+                break
+            elif self.state[i][col] == player_color: 
+                if found_opposite: 
+                    return True
+                break
+            else:  
+                found_opposite = True
+            i -= 1
+
+        return True  # METTRE A FALSE, ICI TRUE JUSTE POUR DEBUG  !!!
+
 
     def on_canvas_click(self, event):
             """manages the click event by placing a counter of the player's color in the clicked cel"""
             x, y = event.x, event.y
             row, col = self.pixel_to_cell(x, y)
-            if row < 8 and col < 8:
-                print("Clicked cell:", row, col)
-                self.place_piece(row, col, self.current_player)  # use the current's player color
-                self.toggle_player()  # change the player for the next turn
+            if row < 8 and col < 8 and self.state[row][col] is None:
+                if self.is_valid_move(row,col,self.current_player):
+                    print("valide mouv:", row, col)
+                    self.place_piece(row, col, self.current_player)  # use the current's player color
+                    self.toggle_player()  # change the player for the next turn
+                else:
+                    print("invalid mouv:",row,col)
 
 
     def place_piece(self, row, col, color):
