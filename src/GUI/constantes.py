@@ -1,5 +1,5 @@
 #general constants for the GUI
-WINDOW_HEIGHT = "950"
+WINDOW_HEIGHT = "1000"
 WINDOW_WIDTH = "600"
 TITLE = "Othello"
 

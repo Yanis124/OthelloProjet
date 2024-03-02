@@ -7,13 +7,26 @@ class OthelloGame:
         self.current_player *= -1  
    
     def is_valid_move(self, row, col):
-            # vérifie si le mouvement est valide
-            pass
+        """check if the move is valid"""
+        return True
 
-        def make_move(self, row, col):
-            # faire un mouvement
-            pass
+    def make_move(self, row, col):
+        """Make a move"""
+        pass
+       
+    def flip_disks(self, row, col):
+        """change the color of captured circles"""
+        pass
+    
+    def set_difficulty_game(self, difficulty):
+        """Set the difficulty of the game"""
+        self.difficulty_game = difficulty
 
-        def flip_disks(self, row, col):
-            # retourner les pions capturés
-            pass
+            
+                
+    
+        
+            
+        
+        
+        
