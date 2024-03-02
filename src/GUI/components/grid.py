@@ -109,7 +109,7 @@ class Grid:
                 found_opposite = True
             i -= 1
 
-        return True  # METTRE A FALSE, ICI TRUE JUSTE POUR DEBUG  !!!
+        return False  # METTRE A FALSE, ICI TRUE JUSTE POUR DEBUG  !!!
 
 
     def on_canvas_click(self, event):
