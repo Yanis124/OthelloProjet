@@ -13,12 +13,16 @@ class Grid:
         self.canvas = canvas
         self.text_id_first_player = None
         self.text_id_second_player = None
+
+        self.current_player = None
         
         self.init_grid()
         self.draw_circle_counter() #draw the two circles that represent the number of circle for each player
         self.init_circle_counter() #draw the number that represent the number of circle for each player
-        
-        self.canvas.bind('<Button-1>', self.on_canvas_click) #add click event to the grid
+  
+        self.canvas.bind('<Button-1>', self.on_canvas_click)
+
+     
         
     def init_grid(self):
         """initialize the grid"""
@@ -32,7 +36,8 @@ class Grid:
                 x1 = x0 + cell_width
                 y1 = y0 + cell_height
                 self.canvas.create_rectangle(x0, y0, x1, y1, fill = GRID_COLOR, outline = BORDER_COLOR)
-                             
+
+
     def draw_circle_counter(self):
         """ draw the circle counter """
                 
@@ -61,14 +66,29 @@ class Grid:
         self.canvas.itemconfigure(self.text_id_first_player, text = str(number_circle_first_player))
         self.canvas.itemconfigure(self.text_id_second_player, text = str(number_circle_second_player))
         
+
+    def pixel_to_cell(self, x, y):
+        """converts pixels coordinates to grill cell coordinates"""
+        row = y // SQUARE_SIZE
+        col = x // SQUARE_SIZE
+        return row, col
+
     def on_canvas_click(self, event):
-        """Handle the click event by getting the row and col clicked on the grid """
-        x, y = event.x, event.y  
-        row = y // SQUARE_SIZE   
-        col = x // SQUARE_SIZE  
-        if(row < 8 and col < 8):
-            pass  # TODO: Add the logic in the class game to handle the click event
-        
-        return None
-        
+            """manages the click event by placing a counter of the player's color in the clicked cel"""
+            x, y = event.x, event.y
+            row, col = self.pixel_to_cell(x, y)
+            if row < 8 and col < 8:
+                print("Clicked cell:", row, col)
+                self.place_piece(row, col, self.current_player)  # use the current's player color
+                self.toggle_player()  # change the player for the next turn
+
+
+    def place_piece(self, row, col, color):
+        """Place un pion de la couleur spécifiée dans la cellule spécifiée"""
+        circle = Circle(self.canvas, col, row, color)
+        circle.draw_circle()  # draw a circle in the specified cell with the specified color
+
+    def toggle_player(self):
+        """Change le joueur actuel pour le prochain tour"""
+        self.current_player = 'white' if self.current_player == 'black' else 'black'
         
