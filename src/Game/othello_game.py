@@ -1,27 +1,82 @@
+from src.GUI.components.grid import Grid
+
 class OthelloGame:
 
-    def __init__(self):
-        self.current_player = 1  # Joueur 1 commence
+    def __init__(self, canvas):
+        """initialize the game"""
+        
+        self.current_player_color = None
+        self.max_player_color = None
+        self.min_player_color = None
+        self.difficulty = None
+        self.grid = Grid(canvas)
+        self.grid.canvas.bind('<Button-1>', self.on_canvas_click)
+        self.initialize_game() 
+        self.grid.display_available_moves(self.get_available_moves(), self.current_player_color) #display available moves for the current player
+        
+    def initialize_game(self):
+        """config the initial state of the game and draw the initial pieces on the grid"""
+        
+        mid = len(self.grid.state) // 2
+        self.grid.state[mid-1][mid-1] = "white"
+        self.grid.state[mid-1][mid] = "black"
+        self.grid.state[mid][mid-1] = "black"
+        self.grid.state[mid][mid] = "white"
 
-    def switch_player(self):
-        self.current_player *= -1  
-   
-    def is_valid_move(self, row, col):
-        """check if the move is valid"""
-        return True
-
+        # draw on the canva
+        self.grid.place_piece(mid-1, mid-1, "white")
+        self.grid.place_piece(mid-1, mid, "black")
+        self.grid.place_piece(mid, mid-1, "black")
+        self.grid.place_piece(mid, mid, "white")
+           
     def make_move(self, row, col):
         """Make a move"""
+        
         pass
        
-    def flip_disks(self, row, col):
+    def flip_circles(self, row, col):
         """change the color of captured circles"""
         pass
     
-    def set_difficulty_game(self, difficulty):
-        """Set the difficulty of the game"""
-        self.difficulty_game = difficulty
-
+            
+    def get_available_moves(self):
+        """return the list of available moves for the current player"""
+        return []
+        
+        
+    def is_valid_move(self, row, col):
+        """check if the move is valid"""
+        return True
+    
+    def on_canvas_click(self, event):
+        """manages the click event by placing a counter of the player's color in the clicked cel"""
+        
+        x, y = event.x, event.y
+        row, col = self.grid.pixel_to_cell(x, y)
+        if row < 8 and col < 8 and self.grid.state[row][col] is None:
+            if self.is_valid_move(row, col):
+                print("valide mouv:", row, col)
+                self.grid.place_piece(row, col, self.current_player_color)  
+                self.toggle_player()  # change the player for the next turn
+            else:
+                print("invalid mouv:",row,col)
+        
+        
+    def toggle_player(self):
+        """change the color of the current player"""
+        
+        self.current_player_color = 'white' if self.current_player_color == 'black' else 'black'
+        
+    def set_max_player_color(self, color):
+        """set the color for the max player(humain player) and the min player(AI)"""
+        
+        self.max_player_color = color
+        self.min_player_color = "white" if color == "black" else "black"
+        self.current_player_color = color
+    
+        
+        
+    
             
                 
     

@@ -3,7 +3,7 @@ from src.GUI.constantes import SQUARE_SIZE,CANVAS_HEIGHT,GRID_COLOR, BORDER_COLO
 from src.GUI.components.circle import Circle
 
 class Grid:
-    def __init__(self, canvas, game):
+    def __init__(self, canvas):
         """
         initialse the grid, draw the counter of circle for each player
 
@@ -14,19 +14,13 @@ class Grid:
         self.canvas = canvas
         self.number_circle_first_player = 2
         self.number_circle_second_player = 2
-        self.game = game
-        self.difficulty = None
-        self.first_player_color = None #first player is the humain player
-        self.second_player_color = None #second player is the AI 
-        self.current_player = None
 
         self.state = [[None for _ in range(8)] for _ in range(8)]  # 8x8 state matrix initialized to None
         self.init_grid()
-        self.initialize_game() 
         self.draw_circle_counter() #draw the two circles that represent the number of circle for each player
         self.init_circle_counter() #draw the number that represent the number of circle for each player
   
-        self.canvas.bind('<Button-1>', self.on_canvas_click)
+        
 
     def init_grid(self):
         """initialize the grid"""
@@ -41,22 +35,7 @@ class Grid:
                 y1 = y0 + cell_height
                 self.canvas.create_rectangle(x0, y0, x1, y1, fill = GRID_COLOR, outline = BORDER_COLOR)
 
-    def initialize_game(self):
-        """config the initial state of the game and draw the initial pieces on the grid"""
-        
-        mid = len(self.state) // 2
-        self.state[mid-1][mid-1] = "white"
-        self.state[mid-1][mid] = "black"
-        self.state[mid][mid-1] = "black"
-        self.state[mid][mid] = "white"
-
-        # draw on the canva
-        self.place_piece(mid-1, mid-1, "white")
-        self.place_piece(mid-1, mid, "black")
-        self.place_piece(mid, mid-1, "black")
-        self.place_piece(mid, mid, "white")
-     
-
+   
     def draw_circle_counter(self):
         """ draw the circle counter """
                 
@@ -102,48 +81,25 @@ class Grid:
         row = y // SQUARE_SIZE
         col = x // SQUARE_SIZE
         return int(row), int(col)
-
-    def is_valid_move(self, row, col, player_color):
-        """check if the move is valid"""
-        
-        if self.state[row][col] is not None:  # the cell isnt empty
-            return False
-        
-        return True
-
-    def on_canvas_click(self, event):
-        """manages the click event by placing a counter of the player's color in the clicked cel"""
-        
-        x, y = event.x, event.y
-        row, col = self.pixel_to_cell(x, y)
-        if row < 8 and col < 8 and self.state[row][col] is None:
-            if self.is_valid_move(row, col, self.current_player):
-                print("valide mouv:", row, col)
-                self.place_piece(row, col, self.current_player)  # use the current's player color
-                self.toggle_player()  # change the player for the next turn
-            else:
-                print("invalid mouv:",row,col)
-           
-            
+    
+    
     def place_piece(self, row, col, color):
         """place a circle in a specific cell"""
-        print(color)
+        
         circle = Circle(self.canvas, col, row, color)
-        circle.draw_circle()  # draw a circle in the specified cell with the specified color
+        circle.draw_circle()  # draw a circle in the specified cell with the specified color  
+        
+    def display_available_moves(self, available_moves, currnet_player_color):
+        """display the available moves for the current player"""
+        
+        for move in available_moves:
+            circle = Circle(self.canvas, move[1], move[0], currnet_player_color )
+            circle.draw_outlined_circle()
+                
 
-    def toggle_player(self):
-        """change the color of the current player"""
-        self.current_player = 'white' if self.current_player == 'black' else 'black'
-        
-    def set_first_player_color(self, color):
-        """Set the color of the first player"""
-        
-        if color == "Noir":
-            self.current_player = self.first_player_color = "black"
-            self.second_player_color = "white"
+           
             
-        else : 
-            self.current_player = self.first_player_color = "white"
-            self.second_player_color = "black"
+    
+
         
         

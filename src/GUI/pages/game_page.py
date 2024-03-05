@@ -32,9 +32,7 @@ class GamePage(tk.Frame):
         self.canvas = tk.Canvas(self, bg=PAGE_BG_COLOR, highlightthickness=0)
         self.canvas.grid(row=2, column=0, pady=(10,10), sticky='nsew')
 
-        
-        othello_game = OthelloGame()
-        self.grid_game = Grid(self.canvas, othello_game)  # the name grid is already taken by the grid layout
+        self.game = OthelloGame(self.canvas)
         
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -43,7 +41,7 @@ class GamePage(tk.Frame):
         """Change the difficulty of the game"""
         
         self.label.config(text="Difficulty: " + difficulty)
-        self.grid_game.difficulty =  self.difficulty_text
+        self.game.difficulty = difficulty
 
 
     def color_choice(self):
@@ -54,18 +52,18 @@ class GamePage(tk.Frame):
             return  
         elif player_color.lower() in ["noir", "blanc"]:
             couleur_joueur = "black" if player_color.lower() == "noir" else "white"
-            self.grid_game.set_first_player_color(couleur_joueur)  # Sets player color in Grid
+            self.game.set_max_player_color(couleur_joueur)
         else:
             messagebox.showerror("Erreur", "Veuillez choisir entre Noir et Blanc.")
             self.color_choice()  # Try again if the entry is invalid
-            
-        self.grid_game.set_first_player_color(player_color) 
+        
+        
+             
                        
     def reset_page(self):
         """resest the game and the grid as a new game is started"""
         
-        othello_game = OthelloGame()
-        self.grid_game = Grid(self.canvas, othello_game)  
+        self.game = OthelloGame(self.canvas)
             
         
 

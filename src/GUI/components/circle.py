@@ -29,7 +29,7 @@ class Circle:
         
         self.canvas.create_oval(self.row * SQUARE_SIZE + 5, self.col * SQUARE_SIZE + 5 ,
                            (self.row * SQUARE_SIZE) + CIRCLE_RADIUS * 2 - 5, (self.col * SQUARE_SIZE) + CIRCLE_RADIUS * 2 - 5,
-                            outline = "white")
+                            outline = self.color)
         
         
         
