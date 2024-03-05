@@ -1,1 +1,2 @@
 tkinter==8.6
+PyTest==8.0.2
