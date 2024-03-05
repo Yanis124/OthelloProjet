@@ -7,7 +7,7 @@ state_full_board = [['black', 'black', 'black', 'black', 'black', 'black', 'blac
              ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white'],
              ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white'],
              ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white'],
-             ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white']] #+32 black
+             ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white']] #+32 black #+2 corner black 
 
 state_initial_board = [[None, None, None, None, None, None, None, None],
              [None, None, None, None, None, None, None, None],
@@ -26,4 +26,7 @@ state_random_board = [
         ['white', 'black', None, 'black', 'black', 'white', None, 'white'],
         ['white', 'black', 'black', 'white', 'white', 'black', 'white', None],
         ['white', None, 'black', 'black', 'white', 'black', 'black', 'white'],
-        ['white', 'white', 'white', 'black', None, 'white', 'white', 'black']] #+1 black
+        ['white', 'white', 'white', 'black', None, 'white', 'white', 'black']] #+1 black # +2 black corner
+
+available_moves_random = [(2, 3), (3, 2), (4, 5), (5, 4)] #+4 black mobility
+available_moves_empty = [] # +0 mobility 
