@@ -12,9 +12,6 @@ class Grid:
         """
       
         self.canvas = canvas
-        self.number_circle_first_player = 2
-        self.number_circle_second_player = 2
-
         self.state = [[None for _ in range(8)] for _ in range(8)]  # 8x8 state matrix initialized to None
         self.init_grid()
         self.draw_circle_counter() #draw the two circles that represent the number of circle for each player
@@ -58,23 +55,12 @@ class Grid:
         self.canvas.create_text(BLACK_CIRCLE_X_CORDINATE, number_y, text = str(2), font = TITLE_TEXT_FONT)
         self.canvas.create_text(WHITE_CIRCLE_X_CORDINATE, number_y, text = str(2), font = TITLE_TEXT_FONT)
 
-    def update_circle_counter(self, number_circle_first_player, number_circle_second_player):
+    def update_circle_counter(self, number_circle_max_player, number_circle_min_player):
         """Update the circle counters with the current number of circles for each player"""
         
-        self.canvas.itemconfigure(self.text_id_first_player, text = str(number_circle_first_player))
-        self.canvas.itemconfigure(self.text_id_second_player, text = str(number_circle_second_player))
+        self.canvas.itemconfigure(self.text_id_first_player, text = str(number_circle_max_player))
+        self.canvas.itemconfigure(self.text_id_second_player, text = str(number_circle_min_player))
         
-    def update_number_circle(self):
-        """update the number of circle for each player"""
-        
-        for row in self.state:
-            for cell in row:
-                if cell == "black":
-                    self.number_circle_first_player += 1
-                elif cell == "white":
-                    self.number_circle_second_player += 1
-        
-
     def pixel_to_cell(self, x, y):
         """converts pixels coordinates to grill cell coordinates"""
         

@@ -19,23 +19,22 @@ def canvas():
     yield canvas
     root.destroy()
 
+#test the init grid function that initialize the grid in the canvas
 def test_init_grid_dimension(canvas):
-    """test the init grid function that initialize the grid in the canvas"""
+
     grid = Grid(canvas)
     assert len(grid.state) == 8
     assert len(grid.state[0]) == 8
     
-
+#test the draw circle counter function that draw the circle counter for each player
 def test_draw_circle_counter(canvas):
-    """test the draw circle counter function that draw the circle counter for each player"""
     
     grid = Grid(canvas)
     circles = [item_id for item_id in grid.canvas.find_all() if canvas.type(item_id) == "oval"]
     assert len(circles) == 2  # Two circles for each player
 
-
+#test the place piece function that place a piece in the grid and draw the circle in the canvas
 def test_place_piece(canvas):
-    """test the place piece function that place a piece in the grid and draw the circle in the canvas"""
     
     grid = Grid(canvas)
     grid.place_piece(0, 0, "black")
@@ -43,8 +42,8 @@ def test_place_piece(canvas):
     circles = [item_id for item_id in grid.canvas.find_all() if canvas.type(item_id) == "oval"]
     assert len(circles) == 4  # Two circles should be drawn + 2 circle that represent the number of circle for each player
     
+#test the pixel to cell function that convert the pixel coordinate to the cell coordinate in the grid
 def test_pixel_to_cell(canvas):
-    """test the pixel to cell function that convert the pixel coordinate to the cell coordinate in the grid"""
     
     grid = Grid(canvas)
     assert grid.pixel_to_cell(0, 0) == (0, 0)
@@ -52,21 +51,6 @@ def test_pixel_to_cell(canvas):
     assert grid.pixel_to_cell(160, 120) == (1, 2)
     
     
-# def test_toggle_player_black(canvas):
-#     """test the toggle player function that change the current player from black to white"""
-    
-#     grid = Grid(canvas)
-#     grid.current_player = "black"
-#     grid.toggle_player()
-#     assert grid.current_player == "white"
-    
-# def test_toggle_player_white(canvas):
-#     """test the toggle player function that change the current player from white to black"""
-    
-#     grid = Grid(canvas)
-#     grid.current_player = "white"
-#     grid.toggle_player()
-#     assert grid.current_player == "black"
     
     
 

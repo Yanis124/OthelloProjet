@@ -7,7 +7,7 @@ state_full_board = [['black', 'black', 'black', 'black', 'black', 'black', 'blac
              ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white'],
              ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white'],
              ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white'],
-             ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white']] #+32 black #+2 corner black 
+             ['black', 'black', 'black', 'black', 'white', 'white', 'white', 'white']] #+32 black #+2 corner black  #+0 normal ai eval 
 
 state_initial_board = [[None, None, None, None, None, None, None, None],
              [None, None, None, None, None, None, None, None],
@@ -16,7 +16,7 @@ state_initial_board = [[None, None, None, None, None, None, None, None],
              [None, None, None, 'black', 'white', None,None , None],
              [None, None, None, None, None, None, None, None],
              [None, None, None, None, None, None, None, None],
-             [None, None, None, None, None, None, None, None]] #+0
+             [None, None, None, None, None, None, None, None]] #+0 black #+0 corner black #+0 normal ai eval 
 
 state_random_board = [
         ['black', 'black', 'white', None, 'white', 'black', None, 'black'],
