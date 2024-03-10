@@ -22,14 +22,10 @@ def circle_count_corner(state, max_player_color, min_player_color):
     
     return max_player_number_circle - min_player_number_circle
 
-def mobility(state, current_player_color, max_player_color, min_player_color):
-    """return the number of available move of the current player"""
+def mobility(state, max_player_color, min_player_color):
+    """return the diference of mobility between the max and min player """
     
-    if current_player_color == max_player_color:
-        return len(get_available_moves(state))
-    
-    elif current_player_color == min_player_color:
-        return -len(get_available_moves(state))
+    return len(get_available_moves(state, max_player_color)) -len(get_available_moves(state, min_player_color))
     
 def stability(state, max_player_color, min_player_color):
     """return the difference between the stability of the max player and the min player"""
