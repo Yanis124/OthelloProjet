@@ -6,7 +6,7 @@ current_dir = os.getcwd()
 src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../'))
 sys.path.append(src_path)
 
-from src.ai.heuristics.heuristique_utils_fonctions import circle_count, circle_count_corner, mobility 
+from src.ai.heuristics.heuristique_utils_fonctions import circle_count, circle_count_corner, mobility, stability, is_stable
 from test_config import *
 
 #test the circle count function when black is the max player board
@@ -65,9 +65,121 @@ def test_mobility_black():
 def test_mobility_white():
     pass
 
+#test the function that check if a piece is stable for corner
+def test_is_stable_corner():
+    
+    player = 'black'
+    
+    #full board
+    assert is_stable(state_full_board, player, 7, 7) == False 
+    assert is_stable(state_full_board, player, 0, 0) == True 
+    assert is_stable(state_full_board, player, 0, 7) == True 
+    assert is_stable(state_full_board, player, 7, 0) == True
+     
+    #start board
+    assert is_stable(state_initial_board, player, 7, 7) == False 
+    assert is_stable(state_initial_board, player, 0, 0) == False  
+    assert is_stable(state_initial_board, player, 0, 7) == False  
+    assert is_stable(state_initial_board, player, 7, 0) == False
+    
+    #start board
+    assert is_stable(state_random_board, player, 7, 7) == True
+    assert is_stable(state_random_board, player, 0, 0) == True  
+    assert is_stable(state_random_board, player, 0, 7) == True  
+    assert is_stable(state_random_board, player, 7, 0) == False
+    
+#test the function that check if a piece is stable for boundaries
+def test_is_stable_boundaries():
+    
+    player = 'black'
+    
+    #full board
+    assert is_stable(state_full_board, player, 0, 1) == True 
+    assert is_stable(state_full_board, player, 0, 2) == True 
+    assert is_stable(state_full_board, player, 0, 3) == True 
+    assert is_stable(state_full_board, player, 0, 4) == True
+    assert is_stable(state_full_board, player, 0, 5) == True 
+    assert is_stable(state_full_board, player, 0, 6) == True 
+    
+    assert is_stable(state_full_board, player, 1, 0) == True 
+    assert is_stable(state_full_board, player, 2, 0) == True 
+    assert is_stable(state_full_board, player, 3, 0) == True 
+    assert is_stable(state_full_board, player, 4, 0) == True
+    assert is_stable(state_full_board, player, 5, 0) == True 
+    assert is_stable(state_full_board, player, 6, 0) == True
+    
+    assert is_stable(state_full_board, player, 7, 1) == True 
+    assert is_stable(state_full_board, player, 7, 2) == True 
+    assert is_stable(state_full_board, player, 7, 3) == True 
+    assert is_stable(state_full_board, player, 7, 4) == False
+    assert is_stable(state_full_board, player, 7, 5) == False
+    assert is_stable(state_full_board, player, 7, 6) == False
+    
+    assert is_stable(state_full_board, player, 1, 7) == True
+    assert is_stable(state_full_board, player, 2, 7) == True
+    assert is_stable(state_full_board, player, 3, 7) == True
+    assert is_stable(state_full_board, player, 4, 7) == False
+    assert is_stable(state_full_board, player, 5, 7) == False
+    assert is_stable(state_full_board, player, 6, 7) == False
+    
+    #initial board
+    assert is_stable(state_initial_board, player, 0, 1) == False 
+    assert is_stable(state_initial_board, player, 0, 2) == False 
+    assert is_stable(state_initial_board, player, 0, 3) == False 
+    assert is_stable(state_initial_board, player, 0, 4) == False
+    assert is_stable(state_initial_board, player, 0, 5) == False 
+    assert is_stable(state_initial_board, player, 0, 6) == False 
+    
+    assert is_stable(state_initial_board, player, 1, 0) == False 
+    assert is_stable(state_initial_board, player, 2, 0) == False 
+    assert is_stable(state_initial_board, player, 3, 0) == False 
+    assert is_stable(state_initial_board, player, 4, 0) == False
+    assert is_stable(state_initial_board, player, 5, 0) == False 
+    assert is_stable(state_initial_board, player, 6, 0) == False
+    
+    assert is_stable(state_initial_board, player, 7, 1) == False 
+    assert is_stable(state_initial_board, player, 7, 2) == False 
+    assert is_stable(state_initial_board, player, 7, 3) == False 
+    assert is_stable(state_initial_board, player, 7, 4) == False
+    assert is_stable(state_initial_board, player, 7, 5) == False
+    assert is_stable(state_initial_board, player, 7, 6) == False
+    
+    assert is_stable(state_initial_board, player, 1, 7) == False
+    assert is_stable(state_initial_board, player, 2, 7) == False
+    assert is_stable(state_initial_board, player, 3, 7) == False
+    assert is_stable(state_initial_board, player, 4, 7) == False
+    assert is_stable(state_initial_board, player, 5, 7) == False
+    assert is_stable(state_initial_board, player, 6, 7) == False
+
+#test that the function return false when the piece is not in corner or boundaries
+def test_is_stable_piece_not_corner_boundaries():
+    
+    player = 'black'
+    
+    assert is_stable(state_full_board, player, 1, 1) == False
+    assert is_stable(state_full_board, player, 3, 4) == False
+    
+    assert is_stable(state_initial_board, player, 1, 1) == False
+    assert is_stable(state_initial_board, player, 3, 4) == False
+    
+    assert is_stable(state_random_board, player, 1, 1) == False
+    assert is_stable(state_random_board, player, 3, 6) == False
+         
+    
+    
 #test the stability function when black is the max player
 def test_stability_black():
-    pass
+    
+    max_player_color = 'black'
+    min_player_color = 'white'
+    
+    expected_result_initial_board = 0
+    expected_result_full_board = -4
+    expected_result_random_board = -9
+    
+    assert stability(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
+    assert stability(state_full_board, max_player_color, min_player_color) == expected_result_full_board
+    assert stability(state_random_board, max_player_color, min_player_color) == expected_result_random_board
 
 #test the stability function when white is the max player
 def test_stability_white():
