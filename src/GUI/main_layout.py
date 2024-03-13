@@ -1,6 +1,7 @@
 import tkinter as tk
 from src.GUI.pages.home_page import HomePage
 from src.GUI.pages.game_page import GamePage
+
 from src.GUI.constantes import WINDOW_HEIGHT, WINDOW_WIDTH, TITLE
 import tkinter as tk
 
@@ -15,12 +16,14 @@ class MainLayout(tk.Tk):
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
+        
 
         self.frames = {}
         pages = {HomePage: GamePage, GamePage: HomePage}
 
         # Add HomePage and GamePage to the layout
         for F in (HomePage, GamePage):
+            
             frame = F(container, self, pages[F])
 
             self.frames[F] = frame
@@ -32,7 +35,7 @@ class MainLayout(tk.Tk):
         self.game_mode_var = tk.StringVar(self)
         self.game_mode_var.set("Player vs Player")  # Default game mode
         game_mode_menu = tk.OptionMenu(self, self.game_mode_var,
-                                       "Player vs Player", "Player vs Naive AI", "Player vs Minimax AI",
+                                       "Player vs Player", "Player vs AI",
                                        command=self.set_game_mode)
         game_mode_menu.pack()
 
@@ -43,20 +46,20 @@ class MainLayout(tk.Tk):
         frame = self.frames[cont]
         if difficulty:
             frame.set_difficulty(difficulty)
-            frame.choisir_couleur()
+            frame.color_choice()
         frame.tkraise()
+        
 
     def set_game_mode(self, mode):
         # Set the game mode based on the selection from the dropdown menu
         print("Selected game mode:", mode)
         if mode == "Player vs Player":
             self.game_mode = "player_vs_player"
-        elif mode == "Player vs Naive AI":
+        elif mode == "Player vs AI":
             self.game_mode = "player_vs_naive_ai"
-        elif mode == "Player vs Minimax AI":
-            self.game_mode = "player_vs_minimax_ai"
         else:
             raise ValueError("Unknown game mode selected")
+        
 
     def start_game(self):
         # Start the game based on the selected game mode
@@ -69,4 +72,6 @@ class MainLayout(tk.Tk):
                 pass
             else:
                 raise ValueError("Unknown game mode")
+            
+
 
