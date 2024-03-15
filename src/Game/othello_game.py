@@ -2,6 +2,9 @@ from src.GUI.components.grid import Grid
 from src.Game.game_utils_fonction import get_available_moves
 
 class OthelloGame:
+    
+    """ Class representing the logic of the Othello game ^^"""
+    
 
     def __init__(self, canvas):
         """initialize the game"""
@@ -18,7 +21,7 @@ class OthelloGame:
         self.grid.display_available_moves(get_available_moves(self.grid.state, self.current_player_color), self.current_player_color) #display available moves for the current player
         
     def initialize_game(self):
-        """config the initial state of the game and draw the initial pieces on the grid"""
+        """configure the initial state of the game and draw the initial pieces on the grid"""
         
         mid = len(self.grid.state) // 2
         self.grid.state[mid-1][mid-1] = "white"
@@ -33,7 +36,13 @@ class OthelloGame:
         self.grid.place_piece(mid, mid, "white")
            
     def make_move(self, row, col):
-        """Make a move"""
+        """Make a move
+
+        Args:
+            row: The row index of the move.
+            col: The column index of the move.
+        """
+        
         if self.is_valid_move(row,col):
             self.grid.place_piece(row,col,self.current_player_color) 
             self.flip_circles(row,col) # flip the captured piece
@@ -44,7 +53,12 @@ class OthelloGame:
     
        
     def flip_circles(self, row, col):
-        """change the color of captured circles"""
+        """Change the color of captured circles (flip)
+
+        Args:
+            row: The row index of the move.
+            col: The column index of the move.
+        """
         player_color = self.current_player_color
         opponent_color = self.min_player_color if player_color == self.max_player_color else self.max_player_color
         
