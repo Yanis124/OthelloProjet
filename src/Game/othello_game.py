@@ -125,8 +125,17 @@ class OthelloGame:
             return True
         return False
 
-    
-        
+    def determine_winner(self):
+        """determine the winner of the game"""
+        black_count = sum(row.count("black") for row in self.grid.state)
+        white_count = sum(row.count("white") for row in self.grid.state)
+
+        if black_count > white_count:
+            return "Le joueur NOIR a gagné !"
+        elif black_count < white_count:
+            return "Le joueur BLANC a gagné !"
+        else:
+            return "It's a draw !"
         
     
             
