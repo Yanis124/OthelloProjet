@@ -58,3 +58,18 @@ def is_stable(state, player, row, col):
         return True
 
     return False    
+
+
+def controlled_central_squares(state, max_player_color, min_player_color):
+    """returns the difference in the number of pieces controlled by the max player and the min player in central squares"""
+    central_squares = [(2, 2), (2, 3), (2, 4), (3, 2), (3, 3), (3, 4), (4, 2), (4, 3), (4, 4)]
+    max_player_count = 0
+    min_player_count = 0
+    
+    for row, col in central_squares:
+        if state[row][col] == max_player_color:
+            max_player_count += 1
+        elif state[row][col] == min_player_color:
+            min_player_count += 1
+    
+    return max_player_count - min_player_count
