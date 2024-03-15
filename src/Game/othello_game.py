@@ -34,7 +34,14 @@ class OthelloGame:
            
     def make_move(self, row, col):
         """Make a move"""
-        pass
+        if self.is_valid_move(row,col):
+            self.grid.place_piece(row,col,self.current_player_color) 
+            self.flip_circles(row,col) # flip the captured piece
+            self.update_number_circle() 
+            self.toggle_player()
+        else:
+            print("invalid move at : ",row,col)
+    
        
     def flip_circles(self, row, col):
         """change the color of captured circles"""
