@@ -38,11 +38,27 @@ class OthelloGame:
        
     def flip_circles(self, row, col):
         """change the color of captured circles"""
-        pass
+        player_color = self.current_player_color
+        opponent_color = self.min_player_color if player_color == self.max_player_color else self.max_player_color
+        
+        # check all directions
+        for d_row, d_col in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]:
+            cur_row, cur_col = row + d_row, col + d_col
+            found_opponent = False
+            to_flip = []
+
+            # check if the bounds of the grid and the cell at (cur_row, cur_col) contains the opponent's color
+            while 0 <= cur_row < len(self.grid.state) and 0 <= cur_col < len(self.grid.state) and self.grid.state[cur_row][cur_col] == opponent_color:
+                to_flip.append((cur_row, cur_col))
+                cur_row += d_row
+                cur_col += d_col
+                found_opponent = True
+
+            # if piece found and followed by the current player's piece => the move is valid and flip the pieces
+            if found_opponent and 0 <= cur_row < len(self.grid.state) and 0 <= cur_col < len(self.grid.state) and self.grid.state[cur_row][cur_col] == player_color:
+                for flip_row, flip_col in to_flip:
+                    self.grid.place_piece(flip_row, flip_col, player_color)
     
-    def is_valid_move(self, row, col):
-        """check if the move is valid"""
-        return True
     
     def on_canvas_click(self, event):
         """manages the click event by placing a counter of the player's color in the clicked cel"""
