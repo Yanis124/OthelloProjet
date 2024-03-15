@@ -18,7 +18,7 @@ class OthelloGame:
         self.grid = Grid(canvas)
         self.grid.canvas.bind('<Button-1>', self.on_canvas_click)
         self.initialize_game() 
-        self.grid.display_available_moves(get_available_moves(self.grid.state, self.current_player_color), self.current_player_color) #display available moves for the current player
+        self.grid.display_available_moves(get_available_moves(self.grid.state, self.current_player_color), self.current_player_color) # display available moves for the current player
         
     def initialize_game(self):
         """configure the initial state of the game and draw the initial pieces on the grid"""
@@ -91,7 +91,7 @@ class OthelloGame:
                 self.grid.place_piece(row, col, self.current_player_color)  
                 self.toggle_player()  # change the player for the next turn
             else:
-                print("invalid mouv:",row,col)
+                print("invalid move at :",row,col)
                 
     def update_number_circle(self):
         """update the number of circle for each player"""
@@ -121,7 +121,7 @@ class OthelloGame:
     def is_game_over(self):
         """check if the game is over"""
         if len(get_available_moves(self.grid.state, self.current_player_color)) == 0:
-            # auxun coup possible pour le joueur actuel
+            # aucun coup possible pour le joueur actuel
             return True
         return False
 
