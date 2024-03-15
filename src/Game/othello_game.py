@@ -118,6 +118,13 @@ class OthelloGame:
         self.current_player_color = color
         
     
+    def is_game_over(self):
+        """check if the game is over"""
+        if len(get_available_moves(self.grid.state, self.current_player_color)) == 0:
+            # auxun coup possible pour le joueur actuel
+            return True
+        return False
+
     
         
         
