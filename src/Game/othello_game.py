@@ -86,6 +86,7 @@ class OthelloGame:
             if found_opponent and cur_row in range(board_size) and cur_col in range(board_size) and self.grid.state[cur_row][cur_col] == player_color:
                 for flip_row, flip_col in to_flip:
                     self.grid.place_piece(flip_row, flip_col, player_color)
+                    self.grid.state[flip_row][flip_col] = player_color #update the state of the grid
         print(to_flip)
     
     
@@ -96,7 +97,8 @@ class OthelloGame:
         row, col = self.grid.pixel_to_cell(x, y)
         if row < 8 and col < 8 and self.grid.state[row][col] is None:
             if self.is_valid_move(row, col):
-                self.grid.place_piece(row, col, self.current_player_color)  
+                self.grid.place_piece(row, col, self.current_player_color)
+                self.grid.state[row][col] = self.current_player_color #update the state of the grid
                 self.flip_circles(row, col)  # flip the captured piece
                 self.game_loop(False)
                
