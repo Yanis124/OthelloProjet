@@ -16,6 +16,7 @@ class Grid:
         self.init_grid()
         self.draw_circle_counter() #draw the two circles that represent the number of circle for each player
         self.init_circle_counter() #draw the number that represent the number of circle for each player
+
   
         
 
@@ -58,8 +59,8 @@ class Grid:
     def update_circle_counter(self, number_circle_max_player, number_circle_min_player):
         """Update the circle counters with the current number of circles for each player"""
         
-        self.canvas.itemconfigure(self.text_id_first_player, text = str(number_circle_max_player))
-        self.canvas.itemconfigure(self.text_id_second_player, text = str(number_circle_min_player))
+        self.canvas.itemconfigure(self.text_id_max_player, text = str(number_circle_max_player))
+        self.canvas.itemconfigure(self.text_id_min_player, text = str(number_circle_min_player))
         
     def pixel_to_cell(self, x, y):
         """converts pixels coordinates to grill cell coordinates"""
@@ -81,6 +82,15 @@ class Grid:
         for move in available_moves:
             circle = Circle(self.canvas, move[1], move[0], currnet_player_color )
             circle.draw_outlined_circle()
+            
+    def resset_available_moves(self, available_moves):
+        """remove the available moves from the grid"""
+        
+        for move in available_moves:
+            circle = Circle(self.canvas, move[1], move[0], GRID_COLOR)
+            circle.draw_outlined_circle()
+        
+        
                 
 
            

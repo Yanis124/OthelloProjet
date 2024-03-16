@@ -1,5 +1,5 @@
 from src.GUI.components.grid import Grid
-from src.Game.game_utils_fonction import get_available_moves
+from src.Game.game_utils_fonction import get_available_moves, is_valid_move
 
 class OthelloGame:
     
@@ -15,10 +15,10 @@ class OthelloGame:
         self.number_circle_max_player = 2
         self.number_circle_min_player = 2
         self.difficulty = None
+        self.available_moves = []
         self.grid = Grid(canvas)
         self.grid.canvas.bind('<Button-1>', self.on_canvas_click)
         self.initialize_game() 
-        self.grid.display_available_moves(get_available_moves(self.grid.state, self.current_player_color), self.current_player_color) # display available moves for the current player
         
     def initialize_game(self):
         """configure the initial state of the game and draw the initial pieces on the grid"""
@@ -43,13 +43,18 @@ class OthelloGame:
             col: The column index of the move.
         """
         
-        if self.is_valid_move(row,col):
+        if is_valid_move(self.grid.state,self.current_player_color,row,col):
             self.grid.place_piece(row,col,self.current_player_color) 
             self.flip_circles(row,col) # flip the captured piece
             self.update_number_circle() 
             self.toggle_player()
         else:
             print("invalid move at : ",row,col)
+            
+    def is_valid_move(self, row, col):
+        """Check if the move is valid in any direction."""
+        
+        return (row, col) in self.available_moves
     
        
     def flip_circles(self, row, col):
@@ -62,6 +67,8 @@ class OthelloGame:
         player_color = self.current_player_color
         opponent_color = self.min_player_color if player_color == self.max_player_color else self.max_player_color
         
+        board_size = len(self.grid.state)
+        
         # check all directions
         for d_row, d_col in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]:
             cur_row, cur_col = row + d_row, col + d_col
@@ -69,16 +76,17 @@ class OthelloGame:
             to_flip = []
 
             # check if the bounds of the grid and the cell at (cur_row, cur_col) contains the opponent's color
-            while 0 <= cur_row < len(self.grid.state) and 0 <= cur_col < len(self.grid.state) and self.grid.state[cur_row][cur_col] == opponent_color:
+            while cur_row in range(board_size) and cur_col in range(board_size) and self.grid.state[cur_row][cur_col] == opponent_color:
                 to_flip.append((cur_row, cur_col))
                 cur_row += d_row
                 cur_col += d_col
                 found_opponent = True
 
             # if piece found and followed by the current player's piece => the move is valid and flip the pieces
-            if found_opponent and 0 <= cur_row < len(self.grid.state) and 0 <= cur_col < len(self.grid.state) and self.grid.state[cur_row][cur_col] == player_color:
+            if found_opponent and cur_row in range(board_size) and cur_col in range(board_size) and self.grid.state[cur_row][cur_col] == player_color:
                 for flip_row, flip_col in to_flip:
                     self.grid.place_piece(flip_row, flip_col, player_color)
+        print(to_flip)
     
     
     def on_canvas_click(self, event):
@@ -89,7 +97,9 @@ class OthelloGame:
         if row < 8 and col < 8 and self.grid.state[row][col] is None:
             if self.is_valid_move(row, col):
                 self.grid.place_piece(row, col, self.current_player_color)  
-                self.toggle_player()  # change the player for the next turn
+                self.flip_circles(row, col)  # flip the captured piece
+                self.game_loop(False)
+               
             else:
                 print("invalid move at :",row,col)
                 
@@ -98,11 +108,11 @@ class OthelloGame:
         
         for row in self.grid.state:
             for cell in row:
-                if cell == "black":
-                    self.number_circle_first_player += 1
-                elif cell == "white":
-                    self.number_circle_second_player += 1
-        self.grid.update_circle_counter(self.number_circle_first_player, self.number_circle_second_player)
+                if cell == self.max_player_color:
+                    self.number_circle_max_player += 1
+                elif cell == self.min_player_color:
+                    self.number_circle_min_player += 1
+        
         
         
     def toggle_player(self):
@@ -120,7 +130,7 @@ class OthelloGame:
     
     def is_game_over(self):
         """check if the game is over"""
-        if len(get_available_moves(self.grid.state, self.current_player_color)) == 0:
+        if len(self.available_moves) == 0:
             # aucun coup possible pour le joueur actuel
             return True
         return False
@@ -136,6 +146,28 @@ class OthelloGame:
             return "Le joueur BLANC a gagné !"
         else:
             return "It's a draw !"
+        
+    def game_loop(self, first_call):
+        """run the game"""
+        
+        if(not first_call):
+            self.toggle_player()  # change the player for the next turn
+            self.update_number_circle()  # update the number of circle for each player    
+            
+            if(self.is_game_over()):
+                print(self.determine_winner())
+                return
+        
+        self.grid.resset_available_moves(self.available_moves) #avoid having the available moves from the previous turn
+        self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
+        self.grid.display_available_moves(self.available_moves, self.current_player_color)
+            
+        
+        
+            
+
+            
+            
         
     
             

@@ -56,6 +56,8 @@ class GamePage(tk.Frame):
         else:
             messagebox.showerror("Erreur", "Veuillez choisir entre Noir et Blanc.")
             self.color_choice()  # Try again if the entry is invalid
+            
+        self.game.game_loop(True)
         
         
              
