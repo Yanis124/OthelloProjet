@@ -46,7 +46,7 @@ class OthelloGame:
         if is_valid_move(self.grid.state,self.current_player_color,row,col):
             self.grid.place_piece(row,col,self.current_player_color) 
             self.flip_circles(row,col) # flip the captured piece
-            self.update_number_circle() 
+            self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player 
             self.toggle_player()
         else:
             print("invalid move at : ",row,col)
@@ -87,8 +87,8 @@ class OthelloGame:
                 for flip_row, flip_col in to_flip:
                     self.grid.place_piece(flip_row, flip_col, player_color)
                     self.grid.state[flip_row][flip_col] = player_color #update the state of the grid
-        print(to_flip)
-    
+                    self.update_number_circle(0, 1) 
+        
     
     def on_canvas_click(self, event):
         """manages the click event by placing a counter of the player's color in the clicked cel"""
@@ -99,24 +99,23 @@ class OthelloGame:
             if self.is_valid_move(row, col):
                 self.grid.place_piece(row, col, self.current_player_color)
                 self.grid.state[row][col] = self.current_player_color #update the state of the grid
+                self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player
                 self.flip_circles(row, col)  # flip the captured piece
                 self.game_loop(False)
                
             else:
                 print("invalid move at :",row,col)
                 
-    def update_number_circle(self):
+    def update_number_circle(self, new_circle, fliped_circles):
         """update the number of circle for each player"""
         
-        for row in self.grid.state:
-            for cell in row:
-                if cell == self.max_player_color:
-                    self.number_circle_max_player += 1
-                elif cell == self.min_player_color:
-                    self.number_circle_min_player += 1
+        self.number_circle_max_player = self.number_circle_max_player + new_circle + fliped_circles if self.max_player_color == self.current_player_color else self.number_circle_max_player - fliped_circles
+        self.number_circle_min_player = self.number_circle_min_player + new_circle + fliped_circles if self.min_player_color == self.current_player_color else self.number_circle_min_player - fliped_circles
         
-        
-        
+                    
+        white_circles, black_circles = (self.number_circle_max_player, self.number_circle_min_player) if self.max_player_color == 'black' else (self.min_player_color, self.max_player_color)            
+        self.grid.update_circle_counter(white_circles, black_circles)
+                
     def toggle_player(self):
         """change the color of the current player"""
         
@@ -153,17 +152,15 @@ class OthelloGame:
         """run the game"""
         
         if(not first_call):
-            self.toggle_player()  # change the player for the next turn
-            self.update_number_circle()  # update the number of circle for each player    
+            self.toggle_player()  # change the player for the next turn  
             
-            if(self.is_game_over()):
-                print(self.determine_winner())
-                return
-        
         self.grid.resset_available_moves(self.available_moves) #avoid having the available moves from the previous turn
         self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
         self.grid.display_available_moves(self.available_moves, self.current_player_color)
-            
+    
+        if(self.is_game_over()):
+            print(self.determine_winner())
+            return            
         
         
             

@@ -9,7 +9,7 @@ sys.path.append(src_path)
 
 from tkinter import Tk, Canvas
 from src.GUI.components.grid import Grid  
-from src.GUI.constantes import CANVAS_WIDTH, CANVAS_HEIGHT
+from src.GUI.constantes import CANVAS_WIDTH, CANVAS_HEIGHT, SQUARE_SIZE
 
 @pytest.fixture
 def canvas():
@@ -33,6 +33,21 @@ def test_draw_circle_counter(canvas):
     circles = [item_id for item_id in grid.canvas.find_all() if canvas.type(item_id) == "oval"]
     assert len(circles) == 2  # Two circles for each player
 
+
+#test update circle counter function that update the number of circle for each player
+def test_update_circle_counter(canvas):
+    
+    grid = Grid(canvas)
+    number_circles_black_player = 10
+    number_circles_white_player = 15
+    grid.update_circle_counter(number_circles_black_player, number_circles_white_player)
+    texts = [item_id for item_id in grid.canvas.find_all() if grid.canvas.type(item_id) == "text"]
+    assert len(texts) == 2 
+    
+    assert grid.canvas.itemcget(texts[0], "text") == str(number_circles_black_player)
+    assert grid.canvas.itemcget(texts[1], "text") == str(number_circles_white_player)
+    
+
 #test the place piece function that place a piece in the grid and draw the circle in the canvas
 def test_place_piece(canvas):
     
@@ -50,6 +65,9 @@ def test_pixel_to_cell(canvas):
     assert grid.pixel_to_cell(100, 100) == (1, 1)
     assert grid.pixel_to_cell(160, 120) == (1, 2)
     
+    
+    
+
     
     
     

@@ -16,6 +16,8 @@ class Grid:
         self.init_grid()
         self.draw_circle_counter() #draw the two circles that represent the number of circle for each player
         self.init_circle_counter() #draw the number that represent the number of circle for each player
+        self.text_id_max_player = None
+        self.text_id_min_player = None
 
   
         
@@ -53,14 +55,18 @@ class Grid:
         
         number_y = CANVAS_HEIGHT - (NUMBER_CIRCLE_SIZE + 10)   
         
-        self.canvas.create_text(BLACK_CIRCLE_X_CORDINATE, number_y, text = str(2), font = TITLE_TEXT_FONT)
-        self.canvas.create_text(WHITE_CIRCLE_X_CORDINATE, number_y, text = str(2), font = TITLE_TEXT_FONT)
+        self.text_id_max_player = self.canvas.create_text(BLACK_CIRCLE_X_CORDINATE, number_y, text = str(2), font = TITLE_TEXT_FONT)
+        self.text_id_min_player = self.canvas.create_text(WHITE_CIRCLE_X_CORDINATE, number_y, text = str(2), font = TITLE_TEXT_FONT)
+        
+        
 
-    def update_circle_counter(self, number_circle_max_player, number_circle_min_player):
+    def update_circle_counter(self, number_circle_black_player, number_circle_white_player):
         """Update the circle counters with the current number of circles for each player"""
         
-        self.canvas.itemconfigure(self.text_id_max_player, text = str(number_circle_max_player))
-        self.canvas.itemconfigure(self.text_id_min_player, text = str(number_circle_min_player))
+        texts = [item_id for item_id in self.canvas.find_all() if self.canvas.type(item_id) == "text"]
+
+        self.canvas.itemconfigure(texts[0], text = str(number_circle_black_player))
+        self.canvas.itemconfigure(texts[1], text = str(number_circle_white_player))
         
     def pixel_to_cell(self, x, y):
         """converts pixels coordinates to grill cell coordinates"""
