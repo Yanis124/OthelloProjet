@@ -10,7 +10,7 @@ values = [
         [4, -3, 2, 2, 2, 2, -3, 4]
     ]
 
-def normal_ai_eval(state, max_player_color, min_player_color):
+def normal_ai_utility(state, max_player_color, min_player_color):
     """return the evaluation of a position"""
     
     eval = 0

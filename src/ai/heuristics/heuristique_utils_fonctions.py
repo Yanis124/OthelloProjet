@@ -1,7 +1,7 @@
 from src.Game.game_utils_fonction import get_available_moves
 
 def circle_count(state, max_player_color, min_player_color):
-    """return the difference between the circle number of the max player and the min player"""
+    """return a list the first variable is max_player number of circle the second one is min player number circle"""
     
     max_player_number_circle = 0
     min_player_number_circle = 0
@@ -12,23 +12,23 @@ def circle_count(state, max_player_color, min_player_color):
             elif cell == min_player_color:
                 min_player_number_circle += 1
     
-    return max_player_number_circle - min_player_number_circle
+    return [max_player_number_circle, min_player_number_circle]
 
 def circle_count_corner(state, max_player_color, min_player_color):
-    """return the difference between the circle number in the corner of the max player and the min player"""
+    """return a list the first variable is max_player mobility the second one is min player mobility """
     
     max_player_number_circle = sum(1 for corner in [(0, 0), (0, 7), (7, 0), (7, 7)] if state[corner[0]][corner[1]] == max_player_color)
     min_player_number_circle = sum(1 for corner in [(0, 0), (0, 7), (7, 0), (7, 7)] if state[corner[0]][corner[1]] == min_player_color)
     
-    return max_player_number_circle - min_player_number_circle
+    return [max_player_number_circle, min_player_number_circle]
 
 def mobility(state, max_player_color, min_player_color):
-    """return the diference of mobility between the max and min player """
+    """return a list the first variable is max_player number of corner the second one is min_player number of corner"""
     
-    return len(get_available_moves(state, max_player_color)) -len(get_available_moves(state, min_player_color))
+    return [len(get_available_moves(state, max_player_color)), len(get_available_moves(state, min_player_color))]
     
 def stability(state, max_player_color, min_player_color):
-    """return the difference between the stability of the max player and the min player"""
+    """return a list the first variable is max_player stability the second one is min player stability"""
     
     stability_max_player = 0
     stability_min_player = 0
@@ -48,7 +48,7 @@ def stability(state, max_player_color, min_player_color):
                 else:
                     stability_min_player -= 1
         
-    return stability_max_player - stability_min_player
+    return [stability_max_player, stability_min_player]
     
 def is_stable(state, player, row, col):
     """return True if the piece is stable
@@ -61,7 +61,8 @@ def is_stable(state, player, row, col):
 
 
 def controlled_central_squares(state, max_player_color, min_player_color):
-    """returns the difference in the number of pieces controlled by the max player and the min player in central squares"""
+    """returns a list the first variables is the number of pieces controlled by the max player and the seconde variable is the min player central squares pieces"""
+    
     central_squares = [(2, 2), (2, 3), (2, 4), (3, 2), (3, 3), (3, 4), (4, 2), (4, 3), (4, 4)]
     max_player_count = 0
     min_player_count = 0
@@ -72,4 +73,4 @@ def controlled_central_squares(state, max_player_color, min_player_color):
         elif state[row][col] == min_player_color:
             min_player_count += 1
     
-    return max_player_count - min_player_count
+    return [max_player_count, min_player_count]

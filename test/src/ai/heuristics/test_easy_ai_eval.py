@@ -16,9 +16,11 @@ def test_easy_ai_eval__black():
     
     max_player_color = 'black'
     min_player_color = 'white'
+    
     expected_result_full_board = 32
     expected_result_initial_board = 0
-    expected_result_random_board = 1  
+    expected_result_random_board = 1
+     
     assert easy_ai_utility(state_full_board, max_player_color, min_player_color) == expected_result_full_board
     assert easy_ai_utility(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
     assert easy_ai_utility(state_random_board, max_player_color, min_player_color) == expected_result_random_board
@@ -28,9 +30,11 @@ def test_easy_ai_eval_white():
 
     max_player_color = 'white'
     min_player_color = 'black'
+    
     expected_result_full_board = -32
     expected_result_initial_board = 0
     expected_result_random_board = -1
+    
     assert easy_ai_utility(state_full_board, max_player_color, min_player_color) == expected_result_full_board
     assert easy_ai_utility(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
     assert easy_ai_utility(state_random_board, max_player_color, min_player_color) == expected_result_random_board

@@ -6,7 +6,7 @@ current_dir = os.getcwd()
 src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../'))
 sys.path.append(src_path)
 
-from src.ai.heuristics.heuristique_utils_fonctions import circle_count, circle_count_corner, mobility, stability, is_stable
+from src.ai.heuristics.heuristique_utils_fonctions import circle_count, circle_count_corner, mobility, stability, is_stable, controlled_central_squares
 from test_config import *
 
 #test the circle count function when black is the max player board
@@ -14,9 +14,9 @@ def test_circle_count_black():
     
     max_player_color = 'black'
     min_player_color = 'white'
-    expected_result_full_board = 32
-    expected_result_initial_board = 0
-    expected_result_random_board = 1  
+    expected_result_full_board = [48, 16]
+    expected_result_initial_board = [2, 2]
+    expected_result_random_board = [26, 25]
     assert circle_count(state_full_board, max_player_color, min_player_color) == expected_result_full_board
     assert circle_count(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
     assert circle_count(state_random_board, max_player_color, min_player_color) == expected_result_random_board
@@ -26,9 +26,9 @@ def test_circle_count_white():
     
     max_player_color = 'white'
     min_player_color = 'black'
-    expected_result_full_board = -32
-    expected_result_initial_board = 0
-    expected_result_random_board = -1  
+    expected_result_full_board = [16, 48]
+    expected_result_initial_board = [2, 2]
+    expected_result_random_board = [25, 26]
     assert circle_count(state_full_board, max_player_color, min_player_color) == expected_result_full_board
     assert circle_count(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
     assert circle_count(state_random_board, max_player_color, min_player_color) == expected_result_random_board
@@ -38,9 +38,9 @@ def test_circle_corner_black():
 
     max_player_color = 'black'
     min_player_color = 'white'
-    expected_result_full_board = +2
-    expected_result_initial_board = 0
-    expected_result_random_board = +2  
+    expected_result_full_board = [3, 1]
+    expected_result_initial_board = [0, 0]
+    expected_result_random_board = [3, 1]
     assert circle_count_corner(state_full_board, max_player_color, min_player_color) == expected_result_full_board
     assert circle_count_corner(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
     assert circle_count_corner(state_random_board, max_player_color, min_player_color) == expected_result_random_board
@@ -50,20 +50,36 @@ def test_circle_corner_white():
 
     max_player_color = 'white'
     min_player_color = 'black'
-    expected_result_full_board = -2
-    expected_result_initial_board = 0
-    expected_result_random_board = -2  
+    expected_result_full_board = [1, 3]
+    expected_result_initial_board = [0, 0]
+    expected_result_random_board = [1, 3] 
     assert circle_count_corner(state_full_board, max_player_color, min_player_color) == expected_result_full_board
     assert circle_count_corner(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
     assert circle_count_corner(state_random_board, max_player_color, min_player_color) == expected_result_random_board
 
 #test the mobility function when black is the max player
 def test_mobility_black():
-    pass
+    
+    max_player_color = 'black'
+    min_player_color = 'white'
+    expected_result_full_board = [0, 0]
+    expected_result_initial_board = [4, 4]
+    expected_result_random_board = [10, 10] 
+    assert mobility(state_full_board, max_player_color, min_player_color) == expected_result_full_board
+    assert mobility(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
+    assert mobility(state_random_board, max_player_color, min_player_color) == expected_result_random_board
 
 #test the mobility function when white is the max player
 def test_mobility_white():
-    pass
+    
+    max_player_color = 'white'
+    min_player_color = 'black'
+    expected_result_full_board = [0, 0]
+    expected_result_initial_board = [4, 4]
+    expected_result_random_board = [10, 10] 
+    assert mobility(state_full_board, max_player_color, min_player_color) == expected_result_full_board
+    assert mobility(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
+    assert mobility(state_random_board, max_player_color, min_player_color) == expected_result_random_board
 
 #test the function that check if a piece is stable for corner
 def test_is_stable_corner():
@@ -173,9 +189,9 @@ def test_stability_black():
     max_player_color = 'black'
     min_player_color = 'white'
     
-    expected_result_initial_board = 0
-    expected_result_full_board = -4
-    expected_result_random_board = -9
+    expected_result_initial_board = [-2, -2]
+    expected_result_full_board = [-6, -2]
+    expected_result_random_board = [-8, 1]
     
     assert stability(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
     assert stability(state_full_board, max_player_color, min_player_color) == expected_result_full_board
@@ -183,7 +199,46 @@ def test_stability_black():
 
 #test the stability function when white is the max player
 def test_stability_white():
-    pass
+    
+    max_player_color = 'white'
+    min_player_color = 'black'
+    
+    expected_result_initial_board = [-2, -2]
+    expected_result_full_board = [-2, -6]
+    expected_result_random_board = [1, -8]
+    
+    assert stability(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
+    assert stability(state_full_board, max_player_color, min_player_color) == expected_result_full_board
+    assert stability(state_random_board, max_player_color, min_player_color) == expected_result_random_board
+    
+#test the controlled_central_squares function when black is the max player
+def test_controlled_central_squares_black():
+    
+    max_player_color = 'black'
+    min_player_color = 'white'
+    
+    expected_result_initial_board = [2, 2]
+    expected_result_full_board = [8, 1]
+    expected_result_random_board = [5, 1]
+    
+    assert controlled_central_squares(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
+    assert controlled_central_squares(state_full_board, max_player_color, min_player_color) == expected_result_full_board
+    assert controlled_central_squares(state_random_board, max_player_color, min_player_color) == expected_result_random_board
+    
+#test the controlled_central_squares function when black is the max player
+def test_controlled_central_squares_white():
+    
+    max_player_color = 'white'
+    min_player_color = 'black'
+    
+    expected_result_initial_board = [2, 2]
+    expected_result_full_board = [1, 8]
+    expected_result_random_board = [1, 5]
+    
+    assert controlled_central_squares(state_initial_board, max_player_color, min_player_color) == expected_result_initial_board
+    assert controlled_central_squares(state_full_board, max_player_color, min_player_color) == expected_result_full_board
+    assert controlled_central_squares(state_random_board, max_player_color, min_player_color) == expected_result_random_board
+    
     
    
     
