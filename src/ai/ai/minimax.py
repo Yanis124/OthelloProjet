@@ -4,6 +4,9 @@ from src.Game.game_utils_fonction import get_available_moves
 
 
 
+# TODO : minimax function
+
+
 def evaluate(state, max_player_color, min_player_color):
     """evaluate the current game state using heuristics functions"""
     return hard_ai_utility(state, max_player_color, min_player_color)
