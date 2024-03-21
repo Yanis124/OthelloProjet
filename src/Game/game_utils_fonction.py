@@ -53,6 +53,38 @@ def is_valid_move(state, player, row, col):
             return True
 
     return False
+
+def get_flip_circles(state, player_color, row, col):
+    """return the list of circles that will be flipped
+
+        Args:
+            row: The row index of the move.
+            col: The column index of the move.
+    """
+    opponent_color = get_opponent_player(player_color)
+        
+    board_size = len(state)
+    flipped_circle = []
+        
+    # check all directions
+    for d_row, d_col in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]:
+        cur_row, cur_col = row + d_row, col + d_col
+        found_opponent = False
+        to_flip = []
+
+        # check if the bounds of the grid and the cell at (cur_row, cur_col) contains the opponent's color
+        while cur_row in range(board_size) and cur_col in range(board_size) and state[cur_row][cur_col] == opponent_color:
+            to_flip.append((cur_row, cur_col))
+            cur_row += d_row
+            cur_col += d_col
+            found_opponent = True
+
+            # if piece found and followed by the current player's piece => the move is valid and flip the pieces
+            if found_opponent and cur_row in range(board_size) and cur_col in range(board_size) and state[cur_row][cur_col] == player_color:
+                for flip_row, flip_col in to_flip:
+                    flipped_circle.append((flip_row, flip_col))
+                    
+    return flipped_circle
     
     
 def get_opponent_player(player):
