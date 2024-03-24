@@ -1,10 +1,17 @@
 from src.GUI.components.grid import Grid
-from src.Game.game_utils_fonction import get_available_moves, is_valid_move, get_flip_circles
-
+from src.Game.game_utils_fonction import get_available_moves, is_valid_move, get_flip_circles, is_game_over
+from src.ai.ai.minimax import get_best_move
+from src.ai.heuristics.easy_ai_eval import easy_ai_utility
+from src.ai.heuristics.normal_ai_eval import normal_ai_utility
+from src.ai.heuristics.hard_ai_eval import hard_ai_utility
 class OthelloGame:
     
     """ Class representing the logic of the Othello game ^^"""
     
+    #AI constants
+    EASY_AI = (1, easy_ai_utility)
+    NORMAL_AI = (4, normal_ai_utility)
+    HARD_AI = (3, hard_ai_utility)
 
     def __init__(self, canvas):
         """initialize the game"""
@@ -15,6 +22,7 @@ class OthelloGame:
         self.number_circle_max_player = 2
         self.number_circle_min_player = 2
         self.difficulty = None
+        self.ai_parametres = (None, None) 
         self.available_moves = []
         self.grid = Grid(canvas)
         self.grid.canvas.bind('<Button-1>', self.on_canvas_click)
@@ -35,19 +43,23 @@ class OthelloGame:
         self.grid.place_piece(mid, mid-1, "black")
         self.grid.place_piece(mid, mid, "white")
            
-    def make_move(self, row, col):
+    def make_move(self, row = None, col = None):
         """Make a move
 
         Args:
             row: The row index of the move.
             col: The column index of the move.
         """
-        
+            
         if is_valid_move(self.grid.state,self.current_player_color,row,col):
-            self.grid.place_piece(row,col,self.current_player_color) 
-            self.flip_circles(row,col) # flip the captured piece
-            self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player 
-            self.toggle_player()
+            
+            if row is not None or col is not None:
+                self.grid.place_piece(row, col, self.current_player_color)
+                self.grid.state[row][col] = self.current_player_color #update the state of the grid
+                self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player
+                self.flip_circles(row, col)  # flip the captured piece
+                
+            self.game_loop(False)
         else:
             print("invalid move at : ",row,col)
             
@@ -79,25 +91,16 @@ class OthelloGame:
         
         x, y = event.x, event.y
         row, col = self.grid.pixel_to_cell(x, y)
-        print(self.grid.state)
+
         if row < 8 and col < 8 and self.grid.state[row][col] is None:
-            if self.is_valid_move(row, col):
-                self.grid.place_piece(row, col, self.current_player_color)
-                self.grid.state[row][col] = self.current_player_color #update the state of the grid
-                self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player
-                self.flip_circles(row, col)  # flip the captured piece
-                self.game_loop(False)
-               
-            else:
-                print("invalid move at :",row,col)
+           self.make_move(row, col)
                 
     def update_number_circle(self, new_circle, fliped_circles):
         """update the number of circle for each player"""
         
         self.number_circle_max_player = self.number_circle_max_player + new_circle + fliped_circles if self.max_player_color == self.current_player_color else self.number_circle_max_player - fliped_circles
         self.number_circle_min_player = self.number_circle_min_player + new_circle + fliped_circles if self.min_player_color == self.current_player_color else self.number_circle_min_player - fliped_circles
-        
-                    
+                
         white_circles, black_circles = (self.number_circle_max_player, self.number_circle_min_player) if self.max_player_color == 'black' else (self.number_circle_min_player ,self.number_circle_max_player)            
         self.grid.update_circle_counter(white_circles, black_circles)
                 
@@ -113,14 +116,6 @@ class OthelloGame:
         self.max_player_color = "white" if color == "black" else "black"
         self.current_player_color = color
         
-    
-    def is_game_over(self):
-        """check if the game is over"""
-        if len(self.available_moves) == 0:
-            # aucun coup possible pour le joueur actuel
-            return True
-        return False
-
     def determine_winner(self):
         """determine the winner of the game"""
         black_count = sum(row.count("black") for row in self.grid.state)
@@ -133,6 +128,12 @@ class OthelloGame:
         else:
             return "It's a draw !"
         
+    def set_ai_parametres(self):
+        """Set the depth of the minimax algorithm"""
+        print(self.difficulty)
+        
+        self.ai_parametres = self.HARD_AI  if self.difficulty == "Hard" else (self.NORMAL_AI if self.difficulty == "Normal" else self.EASY_AI)
+
     def game_loop(self, first_call):
         """run the game"""
         
@@ -142,10 +143,20 @@ class OthelloGame:
         self.grid.resset_available_moves(self.available_moves) #avoid having the available moves from the previous turn
         self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
         self.grid.display_available_moves(self.available_moves, self.current_player_color)
-        
-        if(self.is_game_over()):
+            
+        if is_game_over(self.available_moves):
             print(self.determine_winner())
             return
+        
+        if self.current_player_color == self.max_player_color :
+            ai_move = get_best_move(self.grid.state, self.max_player_color, self.min_player_color, self.current_player_color, depth = self.ai_parametres[0], utility_function = self.ai_parametres[1])
+            print(ai_move)
+
+            if(ai_move is None):
+                self.game_loop(False)
+                return
+            
+            self.make_move(ai_move[0], ai_move[1]) #play the best move of the ia
         
         
     

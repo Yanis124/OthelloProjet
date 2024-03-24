@@ -33,7 +33,6 @@ def is_valid_move(state, player, row, col):
         adj_row, adj_col = row + d_row, col + d_col
         if adj_row in range(board_size) and adj_col in range(board_size) and state[adj_row][adj_col] == opponent :
             adjacent_opponent = True
-            break
     
     # if it not adjacent to an opponent's piece, the move is invalid
     if not adjacent_opponent:
@@ -85,7 +84,14 @@ def get_flip_circles(state, player_color, row, col):
                     flipped_circle.append((flip_row, flip_col))
                     
     return flipped_circle
-    
+
+def is_game_over(available_moves):
+        """check if the game is over"""
+        
+        if len(available_moves) == 0:
+            return True
+        
+        return False
     
 def get_opponent_player(player):
     """return the opponent player"""

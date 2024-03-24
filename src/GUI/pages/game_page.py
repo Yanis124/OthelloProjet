@@ -42,6 +42,7 @@ class GamePage(tk.Frame):
         
         self.label.config(text="Difficulty: " + difficulty)
         self.game.difficulty = difficulty
+        self.game.set_ai_parametres()
 
 
     def color_choice(self):
