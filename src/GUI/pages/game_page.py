@@ -19,7 +19,6 @@ class GamePage(tk.Frame):
 
         self.difficulty_text = "Easy"
         
-        
         # add a label
         self.label = tk.Label(self, text="Difficulty: " + self.difficulty_text, font=TITLE_TEXT_FONT, bg='#2c3e50', fg='white')
         self.label.grid(row=0, column=0, pady=10, padx=10, sticky='ew')
@@ -44,7 +43,6 @@ class GamePage(tk.Frame):
         self.game.difficulty = difficulty
         self.game.set_ai_parametres()
 
-
     def color_choice(self):
         """set the player color and the AI color"""
         
@@ -59,10 +57,7 @@ class GamePage(tk.Frame):
             self.color_choice()  # Try again if the entry is invalid
             
         self.game.game_loop(True)
-        
-        
-             
-                       
+                        
     def reset_page(self):
         """resest the game and the grid as a new game is started"""
         

@@ -13,8 +13,6 @@ def get_available_moves(state, player):
                 if is_valid_move(state, player, row, col):
                     available_moves.append((row, col))
                     
-    print(available_moves)
-
     return available_moves
 
 
@@ -33,6 +31,7 @@ def is_valid_move(state, player, row, col):
         adj_row, adj_col = row + d_row, col + d_col
         if adj_row in range(board_size) and adj_col in range(board_size) and state[adj_row][adj_col] == opponent :
             adjacent_opponent = True
+            break
     
     # if it not adjacent to an opponent's piece, the move is invalid
     if not adjacent_opponent:
