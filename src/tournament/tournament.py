@@ -22,7 +22,8 @@ class Tournament:
         # Write the result to a text file
         with open("src/performance/easy_vs_normal.txt", "a") as file:
             file.write(f"{winner, result[0], result[1]}\n")
-        
-Tournament().ai_vs_ai(0, 1) # run a game between two AI with different difficulty levels (0 easy, 1 normal, 2 hard) 
+
+for i in range(30):
+    Tournament().ai_vs_ai(0, 2) # run a game between two AI with different difficulty levels (0 easy, 1 normal, 2 hard) 
     
         

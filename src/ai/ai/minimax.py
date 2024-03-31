@@ -16,6 +16,11 @@ def minimax(state, depth, maximizing_player, max_player_color, min_player_color,
             new_state = simulate_move(state, move, max_player_color)
             eval = minimax(new_state, depth-1, False, max_player_color, min_player_color, utility_function)
             max_eval = max(max_eval, eval)
+        
+        #avoid inf eval when the move lead to a game over
+        if max_eval == float('-inf'):
+            return utility_function(state, max_player_color, min_player_color)
+        
         return max_eval
     else:
         min_eval = float('inf')
@@ -23,6 +28,11 @@ def minimax(state, depth, maximizing_player, max_player_color, min_player_color,
             new_state = simulate_move(state, move, min_player_color)
             eval = minimax(new_state, depth - 1, True, max_player_color, min_player_color, utility_function)
             min_eval = min(min_eval, eval)
+        
+        #avoid inf eval when the move lead to a game over 
+        if min_eval == float('inf'):
+            return utility_function(state, max_player_color, min_player_color)
+        
         return min_eval
     
 def simulate_move(state, move, player_color):

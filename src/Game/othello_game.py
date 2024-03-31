@@ -8,9 +8,9 @@ class OthelloGame:
     """ Class representing the logic of the Othello game ^^"""
     
     #AI constants
-    EASY_AI = (0, easy_ai_utility)
+    EASY_AI = (2, easy_ai_utility)
     NORMAL_AI = (0, normal_ai_utility)
-    HARD_AI = (0, hard_ai_utility)
+    HARD_AI = (2, hard_ai_utility)
     
     LIST_DIFFICULTY = [EASY_AI, NORMAL_AI, HARD_AI]
 
@@ -148,6 +148,7 @@ class OthelloGame:
         """Set the depth and evaluation function of the minimax algorithm"""
         
         self.max_ai_parametres = self.HARD_AI  if self.difficulty == "Hard" else (self.NORMAL_AI if self.difficulty == "Normal" else self.EASY_AI)
+        print(self.max_ai_parametres)
         
     def game_loop(self, first_call):
         """run the game"""
