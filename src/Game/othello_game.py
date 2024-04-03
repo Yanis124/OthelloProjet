@@ -31,7 +31,6 @@ class OthelloGame:
         self.max_ai_parametres = (None, None)
         self.min_ai_parametres = (None, None) 
         self.available_moves = []
-        self.root = Tk() 
         self.delay = 1000 
         
         if canvas is not None:
@@ -74,11 +73,12 @@ class OthelloGame:
                 if self.canvas is not None:
                     self.grid.place_piece(row, col, self.current_player_color)
                 self.grid.state[row][col] = self.current_player_color #update the state of the grid
+                print(f"{self.current_player_color.capitalize()} joue en {row}, {col}")
                 self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player
                 self.flip_circles(row, col)  # flip the captured piece
                
      
-            self.root.after(self.delay, self.game_loop, False) 
+            self.game_loop(False)
             
         else:
             print("invalid move at : ",row,col)
@@ -161,8 +161,14 @@ class OthelloGame:
     def game_loop(self, first_call):
         """run the game"""
                 
+        print("\n------------------------------------------------")
+
         if not first_call :
             self.toggle_player()  # change the player for the next turn 
+            if self.current_player_color == "black":
+                print("Au tour du joueur Noir.")
+            else:
+                print("Au tour du joueur Blanc.")
             
         if self.game_mode == "ai_vs_ai":
             self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
@@ -172,10 +178,12 @@ class OthelloGame:
             self.grid.display_available_moves(self.available_moves, self.current_player_color)  
             
         if is_game_over(self.available_moves):
+            print("\nFin du jeu!")
             self.determine_winner()
             return 
         
         if self.current_player_color == self.max_player_color:
+            print("L'IA réfléchit pour trouver le meilleur mouvement...")
             self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1])
         elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai":
             self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1])
