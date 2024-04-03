@@ -10,22 +10,14 @@ def calculate_heuristique_score(max_player_parametre, min_player_parametre):
     return 100 * (max_player_parametre - min_player_parametre) / abs(max_player_parametre + min_player_parametre)# Using abs ensures stability evaluation remains consistent even if one player's value is negative.
 
 def hard_ai_utility(state, max_player_color, min_player_color):
-    """return the evaluation of a position"""
-    
-    #get max_player and min_player value for each heuristique
-    coins_parametres =  circle_count(state, max_player_color, min_player_color)
-    mobility_parametres = mobility(state, max_player_color, min_player_color)
-    corner_parametres = circle_count_corner(state, max_player_color, min_player_color)
-    stability_parametres = stability(state, max_player_color, min_player_color)
-    
-    #applie the formula to get the value if each heuristique
-    coin_score = calculate_heuristique_score(coins_parametres[0], coins_parametres[1])
-    mobility_score = calculate_heuristique_score(mobility_parametres[0], mobility_parametres[1])
-    corner_score = calculate_heuristique_score(corner_parametres[0], corner_parametres[1])
-    stability_score = calculate_heuristique_score(stability_parametres[0], stability_parametres[1])
-    
-    return coin_score  + mobility_score + corner_score + stability_score
-    
-        
-    
-        
+    max_coins, min_coins = circle_count(state, max_player_color, min_player_color)
+    max_mobility, min_mobility = mobility(state, max_player_color, min_player_color)
+    max_corners, min_corners = circle_count_corner(state, max_player_color, min_player_color)
+    max_stability, min_stability = stability(state, max_player_color, min_player_color)
+
+    coin_score = calculate_heuristique_score(max_coins, min_coins)
+    mobility_score = calculate_heuristique_score(max_mobility, min_mobility)
+    corner_score = calculate_heuristique_score(max_corners, min_corners)
+    stability_score = calculate_heuristique_score(max_stability, min_stability)
+
+    return coin_score + mobility_score + corner_score + stability_score

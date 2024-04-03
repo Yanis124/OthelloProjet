@@ -1,4 +1,5 @@
 #utils functions that will be used in the OthelloGame class
+import cProfile
 
 def get_available_moves(state, player):
     """return the list of available moves for the current player""" 
@@ -15,42 +16,34 @@ def get_available_moves(state, player):
                     
     return available_moves
 
-
-
 def is_valid_move(state, player, row, col):
-    """Check if the move is valid in any direction."""
-    # check the bounds of the board
-    
+    """Check if placing a piece at (row, col) is a valid move for the player."""
     board_size = len(state)
-    
-    opponent = get_opponent_player(player) 
+    opponent = get_opponent_player(player)
 
-    # Check if there is at least one opponent's piece adjacent to the cell
-    adjacent_opponent = False
-    for d_row, d_col in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]:
-        adj_row, adj_col = row + d_row, col + d_col
-        if adj_row in range(board_size) and adj_col in range(board_size) and state[adj_row][adj_col] == opponent :
-            adjacent_opponent = True
-            break
-    
-    # if it not adjacent to an opponent's piece, the move is invalid
-    if not adjacent_opponent:
-        return False
-    
-    # Check if there is a sequence of opponent's pieces followed by the player's piece in any direction
-    for d_row, d_col in [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]:
+    # directions to check: right, left, down, up, and diagonals
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]
+
+    for d_row, d_col in directions:
         cur_row, cur_col = row + d_row, col + d_col
         found_opponent = False
 
-        while 0 <= cur_row < len(state) and 0 <= cur_col < len(state[0]) and state[cur_row][cur_col] == opponent and state[cur_row][cur_col] is not None:
+        # move in the direction until we hit a piece of the player, or an empty cell or the edge of the board
+        while 0 <= cur_row < board_size and 0 <= cur_col < board_size:
+            if state[cur_row][cur_col] == opponent:
+                found_opponent = True
+            elif state[cur_row][cur_col] == player and found_opponent:
+                # found a sequence of opponent pieces followed by a player's piece
+                return True
+            else:
+                break
+
+            # move to the next cell in the direction
             cur_row += d_row
             cur_col += d_col
-            found_opponent = True
-
-        if found_opponent and 0 <= cur_row < len(state) and 0 <= cur_col < len(state[0]) and state[cur_row][cur_col] == player:
-            return True
 
     return False
+
 
 def get_flip_circles(state, player_color, row, col):
     """return the list of circles that will be flipped
@@ -95,3 +88,5 @@ def is_game_over(available_moves):
 def get_opponent_player(player):
     """return the opponent player"""
     return "black" if player == "white" else "white"
+
+

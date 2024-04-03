@@ -4,12 +4,20 @@ from copy import deepcopy
 from src.Game.game_utils_fonction import get_available_moves
 from src.Game.game_utils_fonction import is_game_over, get_flip_circles
 
+from functools import lru_cache
+hash_table = {}
+
 
 def minimax(state, depth, alpha, beta, maximizing_player, max_player_color, min_player_color, utility_function):
     """ minimax function """
     
     if depth == 0 or is_game_over(state):
         return utility_function(state, max_player_color, min_player_color)
+    
+    state_key = str(state) # clé unique pour l'état actuel
+    
+    if state_key in hash_table:  # vérifie si l'état est déjà évalué
+        return hash_table[state_key]
     
     if maximizing_player:
         max_eval = float('-inf')
@@ -21,6 +29,7 @@ def minimax(state, depth, alpha, beta, maximizing_player, max_player_color, min_
             if beta <= alpha:
                 print(f"Élagage alpha à la profondeur {depth}. Coup: {move}")
                 break # elagage alpha
+        hash_table[state_key] = max_eval # on ajoute l'éval dans la table
         return max_eval
     else:
         min_eval = float('inf')
@@ -32,7 +41,7 @@ def minimax(state, depth, alpha, beta, maximizing_player, max_player_color, min_
             if beta <= alpha:
                 print(f"Élagage alpha à la profondeur {depth}. Coup: {move}")
                 break # elagage beta
-            
+        hash_table[state_key] = min_eval # on ajoute l'éval dans la table
         return min_eval
         
        
