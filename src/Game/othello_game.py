@@ -4,6 +4,10 @@ from src.ai.ai.minimax import get_best_move
 from src.ai.heuristics.easy_ai_eval import easy_ai_utility
 from src.ai.heuristics.normal_ai_eval import normal_ai_utility
 from src.ai.heuristics.hard_ai_eval import hard_ai_utility
+
+import time
+from tkinter import Tk
+
 class OthelloGame:
     """ Class representing the logic of the Othello game ^^"""
     
@@ -27,6 +31,8 @@ class OthelloGame:
         self.max_ai_parametres = (None, None)
         self.min_ai_parametres = (None, None) 
         self.available_moves = []
+        self.root = Tk() 
+        self.delay = 1000 
         
         if canvas is not None:
             self.canvas = canvas
@@ -70,8 +76,10 @@ class OthelloGame:
                 self.grid.state[row][col] = self.current_player_color #update the state of the grid
                 self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player
                 self.flip_circles(row, col)  # flip the captured piece
-                
-            self.game_loop(False)
+               
+     
+            self.root.after(self.delay, self.game_loop, False) 
+            
         else:
             print("invalid move at : ",row,col)
             
