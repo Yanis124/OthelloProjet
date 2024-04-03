@@ -30,7 +30,7 @@ class OthelloGame:
         self.game_mode = None
         self.max_ai_parametres = (None, None)
         self.min_ai_parametres = (None, None) 
-        self.available_moves = []
+        self.available_moves = [] 
         self.delay = 1000 
         
         if canvas is not None:
