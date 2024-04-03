@@ -4,6 +4,7 @@ from copy import deepcopy
 from src.Game.game_utils_fonction import get_available_moves
 from src.Game.game_utils_fonction import is_game_over, get_flip_circles
 
+
 def minimax(state, depth, alpha, beta, maximizing_player, max_player_color, min_player_color, utility_function):
     """ minimax function """
     
@@ -29,7 +30,7 @@ def minimax(state, depth, alpha, beta, maximizing_player, max_player_color, min_
             min_eval = min(min_eval, eval)
             beta = min(beta,eval)
             if beta <= alpha:
-                print(f"Élagage beta à la profondeur {depth}. Coup: {move}")
+                print(f"Élagage alpha à la profondeur {depth}. Coup: {move}")
                 break # elagage beta
             
         return min_eval

@@ -18,7 +18,7 @@ class OthelloGame:
     
     LIST_DIFFICULTY = [EASY_AI, NORMAL_AI, HARD_AI]
 
-    def __init__(self, canvas):
+    def __init__(self, canvas, game_page):
         """initialize the game"""
         
         self.current_player_color = None
@@ -32,6 +32,7 @@ class OthelloGame:
         self.min_ai_parametres = (None, None) 
         self.available_moves = [] 
         self.delay = 1000 
+        self.game_page = game_page
         
         if canvas is not None:
             self.canvas = canvas
@@ -166,9 +167,10 @@ class OthelloGame:
         if not first_call :
             self.toggle_player()  # change the player for the next turn 
             if self.current_player_color == "black":
-                print("Au tour du joueur Noir.")
+                self.game_page.add_message("Au tour du joueur Noir.")
             else:
-                print("Au tour du joueur Blanc.")
+                self.game_page.add_message("Au tour du joueur Blanc.")
+
             
         if self.game_mode == "ai_vs_ai":
             self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
@@ -178,12 +180,12 @@ class OthelloGame:
             self.grid.display_available_moves(self.available_moves, self.current_player_color)  
             
         if is_game_over(self.available_moves):
-            print("\nFin du jeu!")
+            self.game_page.add_message("\nFin du jeu!")
             self.determine_winner()
             return 
         
         if self.current_player_color == self.max_player_color:
-            print("L'IA réfléchit pour trouver le meilleur mouvement...")
+            self.game_page.add_message("L'IA réfléchit pour trouver le meilleur mouvement...")
             self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1])
         elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai":
             self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1])
