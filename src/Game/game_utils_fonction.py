@@ -13,8 +13,6 @@ def get_available_moves(state, player):
                 if is_valid_move(state, player, row, col):
                     available_moves.append((row, col))
                     
-    print(available_moves)
-
     return available_moves
 
 
@@ -85,7 +83,14 @@ def get_flip_circles(state, player_color, row, col):
                     flipped_circle.append((flip_row, flip_col))
                     
     return flipped_circle
-    
+
+def is_game_over(available_moves):
+        """check if the game is over"""
+        
+        if len(available_moves) == 0:
+            return True
+        
+        return False
     
 def get_opponent_player(player):
     """return the opponent player"""

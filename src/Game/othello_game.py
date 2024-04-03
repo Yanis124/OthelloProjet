@@ -1,10 +1,22 @@
 from src.GUI.components.grid import Grid
-from src.Game.game_utils_fonction import get_available_moves, is_valid_move, get_flip_circles
+from src.Game.game_utils_fonction import get_available_moves, is_valid_move, get_flip_circles, is_game_over
+from src.ai.ai.minimax import get_best_move
+from src.ai.heuristics.easy_ai_eval import easy_ai_utility
+from src.ai.heuristics.normal_ai_eval import normal_ai_utility
+from src.ai.heuristics.hard_ai_eval import hard_ai_utility
+
+import time
+from tkinter import Tk
 
 class OthelloGame:
-    
     """ Class representing the logic of the Othello game ^^"""
     
+    #AI constants
+    EASY_AI = (2, easy_ai_utility)
+    NORMAL_AI = (0, normal_ai_utility)
+    HARD_AI = (2, hard_ai_utility)
+    
+    LIST_DIFFICULTY = [EASY_AI, NORMAL_AI, HARD_AI]
 
     def __init__(self, canvas):
         """initialize the game"""
@@ -15,9 +27,21 @@ class OthelloGame:
         self.number_circle_max_player = 2
         self.number_circle_min_player = 2
         self.difficulty = None
+        self.game_mode = None
+        self.max_ai_parametres = (None, None)
+        self.min_ai_parametres = (None, None) 
         self.available_moves = []
-        self.grid = Grid(canvas)
-        self.grid.canvas.bind('<Button-1>', self.on_canvas_click)
+        self.root = Tk() 
+        self.delay = 1000 
+        
+        if canvas is not None:
+            self.canvas = canvas
+            self.grid = Grid(canvas)
+            self.grid.canvas.bind('<Button-1>', self.on_canvas_click)
+        else:
+            self.canvas = None
+            self.grid = Grid(None)
+            
         self.initialize_game() 
         
     def initialize_game(self):
@@ -30,24 +54,32 @@ class OthelloGame:
         self.grid.state[mid][mid] = "white"
 
         # draw on the canva
-        self.grid.place_piece(mid-1, mid-1, "white")
-        self.grid.place_piece(mid-1, mid, "black")
-        self.grid.place_piece(mid, mid-1, "black")
-        self.grid.place_piece(mid, mid, "white")
+        if self.canvas is not None:
+            self.grid.place_piece(mid-1, mid-1, "white")
+            self.grid.place_piece(mid-1, mid, "black")
+            self.grid.place_piece(mid, mid-1, "black")
+            self.grid.place_piece(mid, mid, "white")
            
-    def make_move(self, row, col):
+    def make_move(self, row = None, col = None):
         """Make a move
 
         Args:
             row: The row index of the move.
             col: The column index of the move.
         """
-        
-        if is_valid_move(self.grid.state,self.current_player_color,row,col):
-            self.grid.place_piece(row,col,self.current_player_color) 
-            self.flip_circles(row,col) # flip the captured piece
-            self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player 
-            self.toggle_player()
+            
+        if is_valid_move(self.grid.state, self.current_player_color, row, col):
+            
+            if row is not None or col is not None:
+                if self.canvas is not None:
+                    self.grid.place_piece(row, col, self.current_player_color)
+                self.grid.state[row][col] = self.current_player_color #update the state of the grid
+                self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player
+                self.flip_circles(row, col)  # flip the captured piece
+               
+     
+            self.root.after(self.delay, self.game_loop, False) 
+            
         else:
             print("invalid move at : ",row,col)
             
@@ -56,7 +88,6 @@ class OthelloGame:
         
         return (row, col) in self.available_moves
     
-       
     def flip_circles(self, row, col):
         """Change the color of captured circles (flip)
 
@@ -69,8 +100,10 @@ class OthelloGame:
         
         for flip_circle in list_flipped_circles:
             flip_row, flip_col = flip_circle[0], flip_circle[1]
-            self.grid.state[flip_row][flip_col] = self.current_player_color 
-            self.grid.place_piece(flip_row, flip_col, self.current_player_color)
+            self.grid.state[flip_row][flip_col] = self.current_player_color
+            
+            if self.canvas is not None:
+                self.grid.place_piece(flip_row, flip_col, self.current_player_color)
          
         self.update_number_circle(0, len(list_flipped_circles)) 
     
@@ -79,27 +112,20 @@ class OthelloGame:
         
         x, y = event.x, event.y
         row, col = self.grid.pixel_to_cell(x, y)
-        print(self.grid.state)
+
         if row < 8 and col < 8 and self.grid.state[row][col] is None:
-            if self.is_valid_move(row, col):
-                self.grid.place_piece(row, col, self.current_player_color)
-                self.grid.state[row][col] = self.current_player_color #update the state of the grid
-                self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player
-                self.flip_circles(row, col)  # flip the captured piece
-                self.game_loop(False)
-               
-            else:
-                print("invalid move at :",row,col)
+           self.make_move(row, col)
                 
     def update_number_circle(self, new_circle, fliped_circles):
         """update the number of circle for each player"""
         
         self.number_circle_max_player = self.number_circle_max_player + new_circle + fliped_circles if self.max_player_color == self.current_player_color else self.number_circle_max_player - fliped_circles
         self.number_circle_min_player = self.number_circle_min_player + new_circle + fliped_circles if self.min_player_color == self.current_player_color else self.number_circle_min_player - fliped_circles
+                
+        white_circles, black_circles = (self.number_circle_max_player, self.number_circle_min_player) if self.max_player_color == 'black' else (self.number_circle_min_player ,self.number_circle_max_player)  
         
-                    
-        white_circles, black_circles = (self.number_circle_max_player, self.number_circle_min_player) if self.max_player_color == 'black' else (self.number_circle_min_player ,self.number_circle_max_player)            
-        self.grid.update_circle_counter(white_circles, black_circles)
+        if self.canvas is not None:          
+            self.grid.update_circle_counter(white_circles, black_circles)
                 
     def toggle_player(self):
         """change the color of the current player"""
@@ -113,39 +139,68 @@ class OthelloGame:
         self.max_player_color = "white" if color == "black" else "black"
         self.current_player_color = color
         
-    
-    def is_game_over(self):
-        """check if the game is over"""
-        if len(self.available_moves) == 0:
-            # aucun coup possible pour le joueur actuel
-            return True
-        return False
-
     def determine_winner(self):
-        """determine the winner of the game"""
-        black_count = sum(row.count("black") for row in self.grid.state)
-        white_count = sum(row.count("white") for row in self.grid.state)
+        """determine the winner of the game adn return the number of circle for each player"""
+        
+        max_player_count = sum(row.count(self.max_player_color) for row in self.grid.state)
+        min_player_count = sum(row.count(self.min_player_color) for row in self.grid.state)
 
-        if black_count > white_count:
-            return "Le joueur NOIR a gagné !"
-        elif black_count < white_count:
-            return "Le joueur BLANC a gagné !"
+        if max_player_count > min_player_count:
+            print("Le joueur Max a gagné !")
+        elif max_player_count < min_player_count:
+            print("Le joueur Min a gagné !")
         else:
-            return "It's a draw !"
+            print("It's a draw !")
+        
+    def set_ai_parametres(self):
+        """Set the depth and evaluation function of the minimax algorithm"""
+        
+        self.max_ai_parametres = self.HARD_AI  if self.difficulty == "Hard" else (self.NORMAL_AI if self.difficulty == "Normal" else self.EASY_AI)
+        print(self.max_ai_parametres)
         
     def game_loop(self, first_call):
         """run the game"""
-        
-        if(not first_call):
-            self.toggle_player()  # change the player for the next turn  
+                
+        if not first_call :
+            self.toggle_player()  # change the player for the next turn 
             
-        self.grid.resset_available_moves(self.available_moves) #avoid having the available moves from the previous turn
-        self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
-        self.grid.display_available_moves(self.available_moves, self.current_player_color)
+        if self.game_mode == "ai_vs_ai":
+            self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
+        else :
+            self.grid.resset_available_moves(self.available_moves) #avoid having the available moves from the previous turn
+            self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
+            self.grid.display_available_moves(self.available_moves, self.current_player_color)  
+            
+        if is_game_over(self.available_moves):
+            self.determine_winner()
+            return 
         
-        if(self.is_game_over()):
-            print(self.determine_winner())
+        if self.current_player_color == self.max_player_color:
+            self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1])
+        elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai":
+            self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1])
+            
+    def play_best_move(self, depth, utility_function):
+        """play the best move for the AI"""
+        
+        ai_move = get_best_move(self.grid.state, min_player_color = self.min_player_color, max_player_color = self.max_player_color, current_player_color = self.current_player_color, depth = depth,  utility_function = utility_function)
+        print(ai_move)
+        if ai_move is None:
+            self.game_loop(False)
             return
+        self.make_move(ai_move[0], ai_move[1])
+     
+    def ai_vs_ai(self, max_ai_difficulty, min_ai_difficulty):
+        """run a game between two ai"""
+        
+        self.game_mode = "ai_vs_ai"
+        self.max_player_color = "white"
+        self.min_player_color = "black"
+        self.current_player_color = "white"
+        self.max_ai_parametres = self.LIST_DIFFICULTY[max_ai_difficulty]
+        self.min_ai_parametres = self.LIST_DIFFICULTY[min_ai_difficulty]        
+        self.game_loop(True)
+        return (self.number_circle_max_player, self.number_circle_min_player)
         
         
     

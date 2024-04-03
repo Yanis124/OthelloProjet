@@ -21,7 +21,7 @@ def normal_ai_utility(state, max_player_color, min_player_color):
                 eval += values[i][j]
             elif state[i][j] == min_player_color:
                 eval -= values[i][j]
-                
+
     return eval
     
     

@@ -10,18 +10,15 @@ class Grid:
         Args:
             canvas : represente the element where the grid will be drawn
         """
-      
-        self.canvas = canvas
         self.state = [[None for _ in range(8)] for _ in range(8)]  # 8x8 state matrix initialized to None
-        self.init_grid()
-        self.draw_circle_counter() #draw the two circles that represent the number of circle for each player
-        self.init_circle_counter() #draw the number that represent the number of circle for each player
-        self.text_id_max_player = None
-        self.text_id_min_player = None
-
-  
-        
-
+        if canvas is not None:
+            self.canvas = canvas
+            self.init_grid()
+            self.draw_circle_counter() #draw the two circles that represent the number of circle for each player
+            self.init_circle_counter() #draw the number that represent the number of circle for each player
+            self.text_id_max_player = None
+            self.text_id_min_player = None
+            
     def init_grid(self):
         """initialize the grid"""
     
@@ -35,7 +32,6 @@ class Grid:
                 y1 = y0 + cell_height
                 self.canvas.create_rectangle(x0, y0, x1, y1, fill = GRID_COLOR, outline = BORDER_COLOR)
 
-   
     def draw_circle_counter(self):
         """ draw the circle counter """
                 
