@@ -19,9 +19,6 @@ class GamePage(tk.Frame):
 
         self.difficulty_text = "Easy"
         
-        left_padding_frame = tk.Frame(self, width=20, bg=PAGE_BG_COLOR)
-        left_padding_frame.grid(row=0, column=0, rowspan=3, sticky='ns')
-        
         # add a label
         self.label = tk.Label(self, text="Difficulty: " + self.difficulty_text, font=TITLE_TEXT_FONT, bg='#2c3e50', fg='white')
         self.label.grid(row=0, column=0, pady=10, padx=10, sticky='ew')
@@ -32,54 +29,25 @@ class GamePage(tk.Frame):
 
         # add the canvas that will contain the grid
         self.canvas = tk.Canvas(self, bg=PAGE_BG_COLOR, highlightthickness=0)
-        self.canvas.grid(row=0, column=1, pady=(10,10), sticky='nsew')
-        
+        self.canvas.grid(row=2, column=0, pady=(10,10), sticky='nsew')
 
-        self.game = OthelloGame(self.canvas, self)
+        self.game = OthelloGame(self.canvas)
         
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
-        
-        
-        self.message_box = tk.Text(self, height=20, width=30)
-        self.message_box.grid(row=2, column=1, padx=(10,0), sticky='nsew')
-        self.message_box.config(
-            state='normal', 
-            background='#34495e',  
-            foreground='white', 
-            font=('Arial', 12),  
-            borderwidth=2,  
-            relief="solid",  
-            padx=10,  
-            pady=10, 
-        )
-        self.message_box.config(state='disabled')  
-
-        scrollbar = tk.Scrollbar(self, orient="vertical", command=self.message_box.yview)
-        scrollbar.grid(row=2, column=2, sticky='ns') 
-
-        self.message_box.config(yscrollcommand=scrollbar.set)
-
-
-        self.canvas.grid(row=2, column=0, pady=(10,10), sticky='nsew')
-
-
-
-    def add_message(self, message):
-        self.message_box.config(state='normal') 
-        self.message_box.insert(tk.END, message + "\n")  
-        self.message_box.config(state='disabled')
-        self.message_box.see(tk.END) 
-        
-        
-        
+         
     def set_difficulty(self, difficulty):
         """Change the difficulty of the game"""
         
         self.label.config(text="Difficulty: " + difficulty)
-        self.game.difficulty = difficulty
-        self.game.set_ai_parametres()
-
+        
+        if difficulty == "player_vs_player" :
+            self.game.game_mode = "player_vs_player"
+        else :
+            self.game.difficulty = difficulty
+            self.game.game_mode = "player_vs_ai"
+            self.game.set_ai_parametres()
+        
     def color_choice(self):
         """set the player color and the AI color"""
         

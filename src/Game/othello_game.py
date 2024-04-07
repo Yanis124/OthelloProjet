@@ -14,11 +14,11 @@ class OthelloGame:
     #AI constants
     EASY_AI = (2, easy_ai_utility)
     NORMAL_AI = (0, normal_ai_utility)
-    HARD_AI = (3, hard_ai_utility)
+    HARD_AI = (5, hard_ai_utility)
     
     LIST_DIFFICULTY = [EASY_AI, NORMAL_AI, HARD_AI]
 
-    def __init__(self, canvas, game_page):
+    def __init__(self, canvas):
         """initialize the game"""
         
         self.current_player_color = None
@@ -32,7 +32,6 @@ class OthelloGame:
         self.min_ai_parametres = (None, None) 
         self.available_moves = [] 
         self.delay = 1000 
-        self.game_page = game_page
         
         if canvas is not None:
             self.canvas = canvas
@@ -78,7 +77,6 @@ class OthelloGame:
                 self.update_number_circle(1, 0) #increment the number of circle by 1 for the current player
                 self.flip_circles(row, col)  # flip the captured piece
                
-     
             self.game_loop(False)
             
         else:
@@ -122,7 +120,7 @@ class OthelloGame:
         
         self.number_circle_max_player = self.number_circle_max_player + new_circle + fliped_circles if self.max_player_color == self.current_player_color else self.number_circle_max_player - fliped_circles
         self.number_circle_min_player = self.number_circle_min_player + new_circle + fliped_circles if self.min_player_color == self.current_player_color else self.number_circle_min_player - fliped_circles
-                
+             
         white_circles, black_circles = (self.number_circle_max_player, self.number_circle_min_player) if self.max_player_color == 'black' else (self.number_circle_min_player ,self.number_circle_max_player)  
         
         if self.canvas is not None:          
@@ -134,7 +132,7 @@ class OthelloGame:
         self.current_player_color = 'white' if self.current_player_color == 'black' else 'black'
         
     def set_max_player_color(self, color):
-        """set the color for the max player(humain player) and the min player(AI)"""
+        """set the color for the max player and the min player"""
         
         self.min_player_color = color
         self.max_player_color = "white" if color == "black" else "black"
@@ -157,7 +155,6 @@ class OthelloGame:
         """Set the depth and evaluation function of the minimax algorithm"""
         
         self.max_ai_parametres = self.HARD_AI  if self.difficulty == "Hard" else (self.NORMAL_AI if self.difficulty == "Normal" else self.EASY_AI)
-        print(self.max_ai_parametres)
         
     def game_loop(self, first_call):
         """run the game"""
@@ -166,11 +163,6 @@ class OthelloGame:
 
         if not first_call :
             self.toggle_player()  # change the player for the next turn 
-            if self.current_player_color == "black":
-                self.game_page.add_message("Au tour du joueur Noir.")
-            else:
-                self.game_page.add_message("Au tour du joueur Blanc.")
-
             
         if self.game_mode == "ai_vs_ai":
             self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
@@ -180,14 +172,12 @@ class OthelloGame:
             self.grid.display_available_moves(self.available_moves, self.current_player_color)  
             
         if is_game_over(self.available_moves):
-            self.game_page.add_message("\nFin du jeu!")
             self.determine_winner()
             return 
         
-        if self.current_player_color == self.max_player_color:
-            self.game_page.add_message("L'IA réfléchit pour trouver le meilleur mouvement...")
+        if self.current_player_color == self.max_player_color and self.game_mode == "player_vs_ai": #ai vs player (ai is the max player player is the min player)
             self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1])
-        elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai":
+        elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai": #ai vs ai (first ai is the max player and the second ai is the min player)
             self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1])
             
     def play_best_move(self, depth, utility_function):

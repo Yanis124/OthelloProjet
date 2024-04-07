@@ -1,6 +1,6 @@
 #general constants for the GUI
 WINDOW_HEIGHT = "1000"
-WINDOW_WIDTH = "1000"
+WINDOW_WIDTH = "600"
 TITLE = "Othello"
 
 #pages constantes

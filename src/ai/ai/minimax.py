@@ -4,9 +4,7 @@ from copy import deepcopy
 from src.Game.game_utils_fonction import get_available_moves
 from src.Game.game_utils_fonction import is_game_over, get_flip_circles
 
-from functools import lru_cache
 hash_table = {}
-
 
 def minimax(state, depth, alpha, beta, maximizing_player, max_player_color, min_player_color, utility_function):
     """ minimax function """
@@ -29,7 +27,8 @@ def minimax(state, depth, alpha, beta, maximizing_player, max_player_color, min_
             if beta <= alpha:
                 print(f"Élagage alpha à la profondeur {depth}. Coup: {move}")
                 break # elagage alpha
-        hash_table[state_key] = max_eval # on ajoute l'éval dans la table
+        hash_table[state_key] = max_eval # add the eval to the table
+        
         return max_eval
     else:
         min_eval = float('inf')
@@ -41,7 +40,8 @@ def minimax(state, depth, alpha, beta, maximizing_player, max_player_color, min_
             if beta <= alpha:
                 print(f"Élagage alpha à la profondeur {depth}. Coup: {move}")
                 break # elagage beta
-        hash_table[state_key] = min_eval # on ajoute l'éval dans la table
+        hash_table[state_key] = min_eval # add the eval to the table
+
         return min_eval
         
        
@@ -66,6 +66,7 @@ def get_best_move(state, max_player_color, min_player_color, current_player_colo
     
     best_move = None
     best_moves = []
+    hash_table.clear()
     
     alpha = float('-inf')
     beta = float('inf')
