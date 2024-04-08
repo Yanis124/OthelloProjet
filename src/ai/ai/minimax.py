@@ -29,7 +29,8 @@ def minimaxOld(state, depth, alpha, beta, maximizing_player, max_player_color, m
             if beta <= alpha:
                 print(f"Élagage alpha à la profondeur {depth}. Coup: {move}")
                 break # elagage alpha
-        hash_table[state_key] = max_eval # on ajoute l'éval dans la table
+        hash_table[state_key] = max_eval # add the eval to the table
+        
         return max_eval
     else:
         min_eval = float('inf')
@@ -41,7 +42,8 @@ def minimaxOld(state, depth, alpha, beta, maximizing_player, max_player_color, m
             if beta <= alpha:
                 print(f"Élagage alpha à la profondeur {depth}. Coup: {move}")
                 break # elagage beta
-        hash_table[state_key] = min_eval # on ajoute l'éval dans la table
+        hash_table[state_key] = min_eval # add the eval to the table
+
         return min_eval
     
 def max_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta):

@@ -24,3 +24,7 @@ class HomePage(tk.Frame):
         button_hard = tk.Button(self, text = "Hard", command = lambda : controller.show_frame(GamePage, "Hard"), **BUTTON_STYLE)
         button_hard.pack(pady = 10)
         button_hard.config(bg = HOMEPAGE_BUTTON_BG_COLOR)
+        
+        button_hard = tk.Button(self, text = "player vs player", command = lambda : controller.show_frame(GamePage, "player_vs_player"), **BUTTON_STYLE)
+        button_hard.pack(pady = 10)
+        button_hard.config(bg = HOMEPAGE_BUTTON_BG_COLOR)
