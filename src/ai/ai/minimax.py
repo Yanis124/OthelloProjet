@@ -23,7 +23,7 @@ def minimaxOld(state, depth, alpha, beta, maximizing_player, max_player_color, m
         max_eval = float('-inf')
         for move in get_available_moves(state, max_player_color):
             new_state = simulate_move(state, move, max_player_color)
-            eval = minimax(new_state, depth-1, alpha, beta, False, max_player_color, min_player_color, utility_function)
+            eval = minimaxOld(new_state, depth-1, alpha, beta, False, max_player_color, min_player_color, utility_function)
             max_eval = max(max_eval, eval)
             alpha = max(alpha,eval)
             if beta <= alpha:
@@ -36,7 +36,6 @@ def minimaxOld(state, depth, alpha, beta, maximizing_player, max_player_color, m
         min_eval = float('inf')
         for move in get_available_moves(state, min_player_color):
             new_state = simulate_move(state, move, min_player_color)
-            eval = minimax(new_state, depth - 1, alpha, beta, True, max_player_color, min_player_color, utility_function)
             min_eval = min(min_eval, eval)
             beta = min(beta,eval)
             if beta <= alpha:
@@ -46,32 +45,38 @@ def minimaxOld(state, depth, alpha, beta, maximizing_player, max_player_color, m
 
         return min_eval
     
-def max_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta):
-    if depth == 0 or is_game_over(state):
+def max_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function):
+    if depth <= 0 or is_game_over(state):
         return utility_function(state, max_player_color, min_player_color)
+    
     v = float('-inf')
     for move in get_available_moves(state, max_player_color):
         new_state = simulate_move(state, move, max_player_color)
-        v = max(v, min_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta))
-        if use_alpha_beta:
-            alpha = max(alpha, v)
-            if beta <= alpha:
-                print(f"Élagage dans MAX à profondeur {depth}, coup: {move}, alpha: {alpha}, beta: {beta}")
-                break
+        v = max(v, min_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function))
+        print(move, depth)
+        alpha = max(alpha, v)
+        
+        if beta <= alpha:
+            print(f"Élagage dans MAX à profondeur {depth}, coup: {move}, alpha: {alpha}, beta: {beta}")
+            return v
+
     return v
 
-def min_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta):
-    if depth == 0 or is_game_over(state):
+def min_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function):
+    if depth <= 0 or is_game_over(state):
         return utility_function(state, max_player_color, min_player_color)
+    
     v = float('inf')
     for move in get_available_moves(state, min_player_color):
         new_state = simulate_move(state, move, min_player_color)
-        v = min(v, max_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta))
-        if use_alpha_beta:
-            beta = min(beta, v)
-            if beta <= alpha:
-                print(f"Élagage dans MIN à profondeur {depth}, coup: {move}, alpha: {alpha}, beta: {beta}")
-                break
+        v = min(v, max_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function))
+        print(move, depth)
+        
+        beta = min(beta, v)
+        if beta <= alpha:
+            print(f"Élagage dans MIN à profondeur {depth}, coup: {move}, alpha: {alpha}, beta: {beta}")
+            return v
+        
     return v
 
 
@@ -94,25 +99,36 @@ def simulate_move(state, move, player_color):
 def get_best_move(state, max_player_color, min_player_color, current_player_color, depth, utility_function, use_alpha_beta=True):
     best_move = None
     best_eval = float('-inf') if current_player_color == max_player_color else float('inf')
+    best_moves = []
 
     for move in get_available_moves(state, current_player_color):
         new_state = simulate_move(state, move, current_player_color)
         
         # init alpha et beta seulement si use_alpha_beta est True
-        alpha = float('-inf') if use_alpha_beta else None
-        beta = float('inf') if use_alpha_beta else None
+        alpha = float('-inf') 
+        beta = float('inf') 
         
         if current_player_color == max_player_color:
-            eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # call min_value for min_player
+            print(move)
+            eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function) # call min_value for min_player
+            best_moves.append((move, eval))
         else:
-            eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # call max_value for min_player
+            eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function) # call max_value for min_player
+            best_moves.append((move, eval))
         
-        is_better_move = eval > best_eval if current_player_color == max_player_color else eval < best_eval
-        if is_better_move:
-            best_eval = eval
-            best_move = move
+        # is_better_move = eval > best_eval if current_player_color == max_player_color else eval < best_eval
+        # if is_better_move:
+        #     best_eval = eval
+        #     best_move = move
+        
+        if current_player_color == max_player_color:
+            best_move = random.choice(select_highest_occurrences(best_moves)) #select reandom move from the list of best moves
 
-    return best_move
+        else :
+            best_move = random.choice(select_lowest_occurrences(best_moves)) #select random move from the list of best moves
+
+    
+    return best_move[0]
 
 
     

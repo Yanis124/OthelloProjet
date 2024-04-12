@@ -13,8 +13,8 @@ class OthelloGame:
     
     #AI constants
     EASY_AI = (0, easy_ai_utility)
-    NORMAL_AI = (3, normal_ai_utility)
-    HARD_AI = (5, hard_ai_utility)
+    NORMAL_AI = (2, normal_ai_utility)
+    HARD_AI = (0, hard_ai_utility)
     
     LIST_DIFFICULTY = [EASY_AI, NORMAL_AI, HARD_AI]
 
@@ -165,6 +165,7 @@ class OthelloGame:
             self.toggle_player()  # change the player for the next turn 
             
         if self.game_mode == "ai_vs_ai":
+            
             self.available_moves = get_available_moves(self.grid.state, self.current_player_color)
         else :
             self.grid.resset_available_moves(self.available_moves) #avoid having the available moves from the previous turn
@@ -175,10 +176,12 @@ class OthelloGame:
             self.determine_winner()
             return 
         
-        if self.current_player_color == self.max_player_color and self.game_mode == "player_vs_ai": #ai vs player (ai is the max player player is the min player)
+        if self.current_player_color == self.max_player_color: #ai vs player (ai is the max player player is the min player)
             self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1])
         elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai": #ai vs ai (first ai is the max player and the second ai is the min player)
             self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1])
+            
+        
             
     def play_best_move(self, depth, utility_function):
         """play the best move for the AI"""
@@ -198,9 +201,29 @@ class OthelloGame:
         self.min_player_color = "black"
         self.current_player_color = "white"
         self.max_ai_parametres = self.LIST_DIFFICULTY[max_ai_difficulty]
-        self.min_ai_parametres = self.LIST_DIFFICULTY[min_ai_difficulty]        
+        self.min_ai_parametres = self.LIST_DIFFICULTY[min_ai_difficulty]       
         self.game_loop(True)
         return (self.number_circle_max_player, self.number_circle_min_player)
+        
+        
+    
+                    
+        
+        
+            
+
+            
+            
+        
+    
+            
+                
+    
+        
+            
+        
+        
+        
         
         
     
