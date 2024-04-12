@@ -14,7 +14,7 @@ class OthelloGame:
     #AI constants
     EASY_AI = (0, easy_ai_utility)
     NORMAL_AI = (2, normal_ai_utility)
-    HARD_AI = (0, hard_ai_utility)
+    HARD_AI = (4, hard_ai_utility)
     
     LIST_DIFFICULTY = [EASY_AI, NORMAL_AI, HARD_AI]
 
