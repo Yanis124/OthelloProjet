@@ -66,6 +66,9 @@ class GamePage(tk.Frame):
     def reset_page(self):
         """resest the game and the grid as a new game is started"""
         
+        # add the canvas that will contain the grid
+        self.canvas = tk.Canvas(self, bg=PAGE_BG_COLOR, highlightthickness=0)
+        self.canvas.grid(row=2, column=0, pady=(10,10), sticky='nsew')
         self.game = OthelloGame(self.canvas)
             
         

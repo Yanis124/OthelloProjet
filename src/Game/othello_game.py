@@ -31,7 +31,6 @@ class OthelloGame:
         self.max_ai_parametres = (None, None)
         self.min_ai_parametres = (None, None) 
         self.available_moves = [] 
-        self.delay = 1000 
         
         if canvas is not None:
             self.canvas = canvas
@@ -58,6 +57,8 @@ class OthelloGame:
             self.grid.place_piece(mid-1, mid, "black")
             self.grid.place_piece(mid, mid-1, "black")
             self.grid.place_piece(mid, mid, "white")
+            
+        #self.update_number_circle(0,0)
            
     def make_move(self, row = None, col = None):
         """Make a move
@@ -176,13 +177,11 @@ class OthelloGame:
             self.determine_winner()
             return 
         
-        if self.current_player_color == self.max_player_color: #ai vs player (ai is the max player player is the min player)
+        if self.current_player_color == self.max_player_color and (self.game_mode == "player_vs_ai" or self.game_mode == "ai_vs_ai"): #ai vs player (ai is the max player player is the min player)
             self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1])
         elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai": #ai vs ai (first ai is the max player and the second ai is the min player)
             self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1])
-            
-        
-            
+                   
     def play_best_move(self, depth, utility_function):
         """play the best move for the AI"""
         
