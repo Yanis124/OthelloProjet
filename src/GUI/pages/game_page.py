@@ -56,7 +56,7 @@ class GamePage(tk.Frame):
             return  
         elif player_color.lower() in ["noir", "blanc"]:
             couleur_joueur = "black" if player_color.lower() == "noir" else "white"
-            self.game.set_max_player_color(couleur_joueur)
+            self.game.set_min_player_color(couleur_joueur)
         else:
             messagebox.showerror("Erreur", "Veuillez choisir entre Noir et Blanc.")
             self.color_choice()  # Try again if the entry is invalid

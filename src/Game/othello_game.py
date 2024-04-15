@@ -132,7 +132,7 @@ class OthelloGame:
         
         self.current_player_color = 'white' if self.current_player_color == 'black' else 'black'
         
-    def set_max_player_color(self, color):
+    def set_min_player_color(self, color):
         """set the color for the max player and the min player"""
         
         self.min_player_color = color

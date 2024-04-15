@@ -38,13 +38,13 @@ def stability(state, max_player_color, min_player_color):
                 if is_stable(state, max_player_color, row, col):
                     stability_max_player += 1
                 else:
-                    stability_max_player -= 0
+                    stability_max_player -= -1
                     
             elif(state[row][col] == min_player_color):
                 if is_stable(state, min_player_color, row, col):
                     stability_min_player += 1
                 else:
-                    stability_min_player -= 0
+                    stability_min_player -= -1
         
     return [stability_max_player, stability_min_player]
     

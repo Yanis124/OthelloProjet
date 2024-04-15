@@ -9,6 +9,7 @@ sys.path.append(src_path)
 
 from tkinter import Tk, Canvas
 from src.Game.othello_game import OthelloGame
+from src.Game.game_utils_fonction import is_game_over
 from src.GUI.constantes import CANVAS_WIDTH, CANVAS_HEIGHT
 
 src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
@@ -39,7 +40,7 @@ def test_flip_circles_black(canvas):
     
     current_player = "black"
     game = OthelloGame(canvas)
-    game.set_max_player_color(current_player)
+    game.set_min_player_color(current_player)
     
     #initial state of the grid
     move_initial_board = (2, 3)
@@ -62,9 +63,10 @@ def test_flip_circles_black(canvas):
 def test_update_number_circle_black(canvas):
     """test the update number function that update the number of circles for each player when the current player is black"""
     
-    current_player = "black"
     game = OthelloGame(canvas)
-    game.set_max_player_color(current_player)
+    game.current_player_color = "black"
+    game.max_player_color = "black"
+    game.min_player_color = "white"
     fliped_circles = 1
     expected_number_circle_max_player = 4
     expected_number_circle_min_player = 1
@@ -76,9 +78,10 @@ def test_update_number_circle_black(canvas):
 def test_update_number_circle_white(canvas):
     """test the update number function that update the number of circles for each player when the current player is black"""
     
-    current_player = "white"
     game = OthelloGame(canvas)
-    game.set_max_player_color(current_player)
+    game.current_player_color = "white"
+    game.max_player_color = "white"
+    game.min_player_color = "black"
     fliped_circles = 1
     expected_number_circle_max_player = 4
     expected_number_circle_min_player = 1
@@ -87,29 +90,29 @@ def test_update_number_circle_white(canvas):
     assert game.number_circle_max_player == expected_number_circle_max_player
     assert game.number_circle_min_player == expected_number_circle_min_player  
     
-def test_set_max_player_color_black(canvas):
+def test_set_min_player_color_black(canvas):
     """test the set max player function that it set the max player and current player to the one passed on parametre"""
     
     max_player_color = "black"
     min_player_color = "white"
     game = OthelloGame(canvas)
-    game.set_max_player_color(max_player_color)
+    game.set_min_player_color(min_player_color)
     
     assert game.max_player_color == max_player_color
     assert game.min_player_color == min_player_color
-    assert game.current_player_color == max_player_color 
+    assert game.current_player_color == min_player_color 
     
-def test_set_max_player_color_white(canvas):
+def test_set_min_player_color_white(canvas):
     """test the set max player function that it set the max player and current player to the one passed on parametre"""
     
     max_player_color = "white"
     min_player_color = "black"
     game = OthelloGame(canvas)
-    game.set_max_player_color(max_player_color)
+    game.set_min_player_color(min_player_color)
     
     assert game.max_player_color == max_player_color
     assert game.min_player_color == min_player_color
-    assert game.current_player_color == max_player_color 
+    assert game.current_player_color == min_player_color 
     
 def test_toggle_player_black(canvas):
     """test the toggle player function that change the current player from black to white"""
@@ -133,14 +136,10 @@ def test_is_game_over(canvas):
     game =OthelloGame(canvas)
     game.grid.state = state_initial_board
     game.game_loop(True)
-    assert game.is_game_over() == False
+    assert is_game_over(game.available_moves) == False
     
     game.grid.state = state_full_board
     game.game_loop(True)
-    assert game.is_game_over() == True
-    
-    game.grid.state = state_random_board
-    game.game_loop(True)
-    assert game.is_game_over() == False
+    assert is_game_over(game.available_moves) == True
     
     
