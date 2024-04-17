@@ -32,7 +32,7 @@ class Tournament:
         for i in range(nb_games):
             self.ai_vs_ai(file_path)
 
-tournament = Tournament(1,2)
-tournament.simulate_tournament("src/performance/normal_vs_hard.txt", 481)
+tournament = Tournament(0,2)
+tournament.simulate_tournament("src/performance/easy_vs_hard.txt", 110)
     
         
