@@ -6,7 +6,7 @@ dict_ai = {0: 'easy', 1: 'normal', 2: 'hard'}
 dict_ai_color = {0: '#1f77b4', 1: '#2ca02c', 2: '#ff7f0e'}
 draw_color = '#808080'
 
-def get_result_tournament(file_path, first_ai, second_ai):
+def get_wins_result_tournament(file_path, first_ai, second_ai):
     """read the result of the tournament and return the number of matches, wins and draws for each AI"""
     
     with open(file_path, 'r') as file:
@@ -48,10 +48,49 @@ def draw_circle_graph(first_ai, second_ai, total_matches, total_wins_first_ai, t
     plt.axis('equal')  
     plt.title('AI Wins Percentage'+ '\n' + dict_ai[first_ai] + ' vs ' + dict_ai[second_ai] + ' - ' + str(total_matches) + ' matches')
     plt.show()
+    
+def get_average_score_per_game(file_path, first_ai, second_ai):
+    """Read the result of the tournament and calculate the average win score for each AI."""
+   
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    total_scores_first_ai = 0
+    total_win_games_first_ai = 0
+    total_scores_second_ai = 0
+    total_win_games_second_ai = 0
+
+    for line in lines:
+        result, score_first_ai, score_second_ai = line.strip().strip('()').split(', ')
+        if result != "None":
+            
+            if int(result) == first_ai :  
+                total_win_games_first_ai += 1
+                total_scores_first_ai += (int(score_first_ai) - int(score_second_ai))
+            else:
+                total_win_games_second_ai += 1
+                total_scores_second_ai += (int(score_second_ai) - int(score_first_ai))
+
+    average_win_score_first_ai = total_scores_first_ai / total_win_games_first_ai
+    average_win_score_second_ai = total_scores_second_ai / total_win_games_second_ai
+
+    return average_win_score_first_ai, average_win_score_second_ai
+
+def plot_average_score_per_game(first_ai, second_ai, file_path):
+    """Plot the average win score per game for each AI."""
+    
+    average_win_score_first_ai, average_win_score_second_ai = get_average_score_per_game(file_path, first_ai, second_ai)
+
+    plt.bar([dict_ai[first_ai], dict_ai[second_ai]], [average_win_score_first_ai, average_win_score_second_ai], color=[dict_ai_color[first_ai], dict_ai_color[second_ai]])
+
+    plt.xlabel('AI')
+    plt.ylabel('score win gap')
+    plt.title('The average score win gap between the two AIs')
+    plt.xticks(rotation=45)
+    plt.show()
 
 # Example usage
-first_ai = 1
-second_ai = 2
-file_path = 'src/performance/'+dict_ai[first_ai]+"_vs_"+dict_ai[second_ai]+'.txt'  # Path to your data file
-results = get_result_tournament(file_path, first_ai, second_ai)
-draw_circle_graph(first_ai, second_ai, results[0], results[1], results[2], results[3])
+first_ai = 0 
+second_ai = 1
+file_path = 'src/performance/'+dict_ai[first_ai]+"_vs_"+dict_ai[second_ai]+'.txt'
+plot_average_score_per_game(first_ai, second_ai, file_path)
