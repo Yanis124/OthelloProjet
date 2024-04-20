@@ -16,7 +16,7 @@ def max_value(state, depth, alpha, beta, max_player_color, min_player_color, uti
         print(move, depth)
         alpha = max(alpha, v)
         
-        if beta <= alpha:
+        if use_alpha_beta and beta <= alpha:
             print(f"Élagage dans MAX à profondeur {depth}, coup: {move}, alpha: {alpha}, beta: {beta}")
             return v
 
@@ -33,11 +33,12 @@ def min_value(state, depth, alpha, beta, max_player_color, min_player_color, uti
         print(move, depth)
         
         beta = min(beta, v)
-        if beta <= alpha:
+        if use_alpha_beta and beta <= alpha:
             print(f"Élagage dans MIN à profondeur {depth}, coup: {move}, alpha: {alpha}, beta: {beta}")
             return v
         
     return v
+
 
 
 
@@ -69,34 +70,28 @@ def get_best_move(state, max_player_color, min_player_color, current_player_colo
         alpha = float('-inf') 
         beta = float('inf') 
         
-        if use_alpha_beta:  # Utilise alpha-beta uniquement si use_alpha_beta est True
+        if use_alpha_beta:  
             if current_player_color == max_player_color:
-                eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function) # appel de min_value pour le joueur min
-                best_moves.append((move, eval))
+                eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de min_value pour le joueur min
             else:
-                eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function) # appel de max_value pour le joueur max
-                best_moves.append((move, eval))
-        else:  # Sinon, utilise l'évaluation complète sans élagage alpha-beta
+                eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de max_value pour le joueur max
+        else: 
             if current_player_color == max_player_color:
-                eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function) # appel de min_value pour le joueur min
-                best_moves.append((move, eval))
+                eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de min_value pour le joueur min
             else:
-                eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function) # appel de max_value pour le joueur max
-                best_moves.append((move, eval))
+                eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de max_value pour le joueur max
         
-        # is_better_move = eval > best_eval if current_player_color == max_player_color else eval < best_eval
-        # if is_better_move:
-        #     best_eval = eval
-        #     best_move = move
-        
-        if current_player_color == max_player_color:
-            best_move = random.choice(select_highest_occurrences(best_moves)) #select reandom move from the list of best moves
-
-        else :
-            best_move = random.choice(select_lowest_occurrences(best_moves)) #select random move from the list of best moves
-
+        best_moves.append((move, eval))  # Adds the movement and its rating to the list of best movements
     
-    return best_move[0]
+    if current_player_color == max_player_color:
+        best_moves = select_highest_occurrences(best_moves)
+    else:
+        best_moves = select_lowest_occurrences(best_moves)
+
+    best_move = random.choice(best_moves)[0]  # Choose randomly from the best movements
+
+    return best_move
+
 
 
 

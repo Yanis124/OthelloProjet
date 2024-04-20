@@ -181,16 +181,17 @@ class OthelloGame:
             self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1])
         elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai": #ai vs ai (first ai is the max player and the second ai is the min player)
             self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1])
-                   
+                    
     def play_best_move(self, depth, utility_function):
         """play the best move for the AI"""
         
-        ai_move = get_best_move(self.grid.state, min_player_color = self.min_player_color, max_player_color = self.max_player_color, current_player_color = self.current_player_color, depth = depth,  utility_function = utility_function)
+        ai_move = get_best_move(self.grid.state, min_player_color=self.min_player_color, max_player_color=self.max_player_color, current_player_color=self.current_player_color, depth=depth, utility_function=utility_function, use_alpha_beta=True)
         print(ai_move)
         if ai_move is None:
             self.game_loop(False)
             return
         self.make_move(ai_move[0], ai_move[1])
+
      
     def ai_vs_ai(self, max_ai_difficulty, min_ai_difficulty):
         """run a game between two ai"""
