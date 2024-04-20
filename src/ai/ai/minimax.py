@@ -5,42 +5,39 @@ from src.Game.game_utils_fonction import get_available_moves
 from src.Game.game_utils_fonction import is_game_over, get_flip_circles
 
 
-def max_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta=True):
+def max_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta=True, nodes_visited=0):
     if depth <= 0 or is_game_over(state):
-        return utility_function(state, max_player_color, min_player_color)
-    
+        return utility_function(state, max_player_color, min_player_color), nodes_visited
+
     v = float('-inf')
     for move in get_available_moves(state, max_player_color):
         new_state = simulate_move(state, move, max_player_color)
-        v = max(v, min_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta)) 
-        print(move, depth)
+        eval, nodes_visited = min_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta, nodes_visited+1)
+        v = max(v, eval)
         alpha = max(alpha, v)
-        
+
         if use_alpha_beta and beta <= alpha:
-            print(f"Élagage dans MAX à profondeur {depth}, coup: {move}, alpha: {alpha}, beta: {beta}")
-            return v
+            break
 
-    return v
+    return v, nodes_visited
 
-def min_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta=True):
+
+
+def min_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta=True, nodes_visited=0):
     if depth <= 0 or is_game_over(state):
-        return utility_function(state, max_player_color, min_player_color)
-    
+        return utility_function(state, max_player_color, min_player_color), nodes_visited
+
     v = float('inf')
     for move in get_available_moves(state, min_player_color):
         new_state = simulate_move(state, move, min_player_color)
-        v = min(v, max_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta)) 
-        print(move, depth)
-        
+        eval, nodes_visited = max_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta, nodes_visited+1)
+        v = min(v, eval)
         beta = min(beta, v)
+
         if use_alpha_beta and beta <= alpha:
-            print(f"Élagage dans MIN à profondeur {depth}, coup: {move}, alpha: {alpha}, beta: {beta}")
-            return v
-        
-    return v
+            break
 
-
-
+    return v, nodes_visited
 
     
 def simulate_move(state, move, player_color):
@@ -61,36 +58,26 @@ def simulate_move(state, move, player_color):
 def get_best_move(state, max_player_color, min_player_color, current_player_color, depth, utility_function, use_alpha_beta=True):
     best_move = None
     best_eval = float('-inf') if current_player_color == max_player_color else float('inf')
-    best_moves = []
+    best_nodes_visited = 0
 
     for move in get_available_moves(state, current_player_color):
         new_state = simulate_move(state, move, current_player_color)
-        
-        # init alpha et beta seulement si use_alpha_beta est True
-        alpha = float('-inf') 
-        beta = float('inf') 
-        
-        if use_alpha_beta:  
-            if current_player_color == max_player_color:
-                eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de min_value pour le joueur min
-            else:
-                eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de max_value pour le joueur max
-        else: 
-            if current_player_color == max_player_color:
-                eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de min_value pour le joueur min
-            else:
-                eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de max_value pour le joueur max
-        
-        best_moves.append((move, eval))  # Adds the movement and its rating to the list of best movements
-    
-    if current_player_color == max_player_color:
-        best_moves = select_highest_occurrences(best_moves)
-    else:
-        best_moves = select_lowest_occurrences(best_moves)
 
-    best_move = random.choice(best_moves)[0]  # Choose randomly from the best movements
+        if use_alpha_beta:
+            if current_player_color == max_player_color:
+                eval, nodes_visited = min_value(new_state, depth - 1, float('-inf'), float('inf'), max_player_color, min_player_color, utility_function, use_alpha_beta)
+            else:
+                eval, nodes_visited = max_value(new_state, depth - 1, float('-inf'), float('inf'), max_player_color, min_player_color, utility_function, use_alpha_beta)
+        else:
+            eval, nodes_visited = utility_function(new_state, max_player_color, min_player_color), 1
 
-    return best_move
+        if (current_player_color == max_player_color and eval > best_eval) or (current_player_color == min_player_color and eval < best_eval):
+            best_move = move
+            best_eval = eval
+            best_nodes_visited = nodes_visited
+
+    return best_move, best_nodes_visited
+
 
 
 

@@ -11,10 +11,10 @@ from tkinter import Tk
 class OthelloGame:
     """ Class representing the logic of the Othello game ^^"""
     
-    #AI constants
-    EASY_AI = (0, easy_ai_utility)
-    NORMAL_AI = (2, normal_ai_utility)
-    HARD_AI = (4, hard_ai_utility)
+    #AI constants (depth, utility_function, use alpha)
+    EASY_AI = (0, easy_ai_utility, True) 
+    NORMAL_AI = (2, normal_ai_utility, True)
+    HARD_AI = (4, hard_ai_utility, True)
     
     LIST_DIFFICULTY = [EASY_AI, NORMAL_AI, HARD_AI]
 
@@ -28,8 +28,8 @@ class OthelloGame:
         self.number_circle_min_player = 2
         self.difficulty = None
         self.game_mode = None
-        self.max_ai_parametres = (None, None)
-        self.min_ai_parametres = (None, None) 
+        self.max_ai_parametres = [None, None, True]
+        self.min_ai_parametres = [None, None, True] 
         self.available_moves = [] 
         
         if canvas is not None:
@@ -41,6 +41,11 @@ class OthelloGame:
             self.grid = Grid(None)
             
         self.initialize_game() 
+        
+    def count_pieces(self):
+        """Count the number of pieces for each player on the grid."""
+        self.number_circle_max_player = sum(row.count(self.max_player_color) for row in self.grid.state)
+        self.number_circle_min_player = sum(row.count(self.min_player_color) for row in self.grid.state)
         
     def initialize_game(self):
         """configure the initial state of the game and draw the initial pieces on the grid"""
@@ -178,34 +183,50 @@ class OthelloGame:
             return 
         
         if self.current_player_color == self.max_player_color and (self.game_mode == "player_vs_ai" or self.game_mode == "ai_vs_ai"): #ai vs player (ai is the max player player is the min player)
-            self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1])
+            self.play_best_move(self.max_ai_parametres[0], self.max_ai_parametres[1], use_alpha_beta=self.max_ai_parametres[2])
         elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai": #ai vs ai (first ai is the max player and the second ai is the min player)
-            self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1])
+            self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1], use_alpha_beta=self.min_ai_parametres[2])
                     
-    def play_best_move(self, depth, utility_function):
+    def play_best_move(self, depth, utility_function, use_alpha_beta=True):
         """play the best move for the AI"""
+
+        ai_move, nodes_visited = get_best_move(self.grid.state, 
+                                            min_player_color=self.min_player_color, 
+                                            max_player_color=self.max_player_color, 
+                                            current_player_color=self.current_player_color, 
+                                            depth=depth, utility_function=utility_function, 
+                                            use_alpha_beta=use_alpha_beta)
         
-        ai_move = get_best_move(self.grid.state, min_player_color=self.min_player_color, max_player_color=self.max_player_color, current_player_color=self.current_player_color, depth=depth, utility_function=utility_function, use_alpha_beta=True)
-        print(ai_move)
+        print(f"Best move: {ai_move}, Nodes visited: {nodes_visited}")
         if ai_move is None:
             self.game_loop(False)
             return
         self.make_move(ai_move[0], ai_move[1])
 
+
+
      
-    def ai_vs_ai(self, max_ai_difficulty, min_ai_difficulty):
+    def ai_vs_ai(self, max_ai_difficulty, min_ai_difficulty, max_ai_elagage, min_ai_elagage):
         """run a game between two ai"""
         
         self.game_mode = "ai_vs_ai"
         self.max_player_color = "white"
         self.min_player_color = "black"
         self.current_player_color = "white"
-        self.max_ai_parametres = self.LIST_DIFFICULTY[max_ai_difficulty]
-        self.min_ai_parametres = self.LIST_DIFFICULTY[min_ai_difficulty]       
+        self.max_ai_parametres[0] = self.LIST_DIFFICULTY[max_ai_difficulty][0]
+        self.max_ai_parametres[1] = self.LIST_DIFFICULTY[max_ai_difficulty][1]
+        self.max_ai_parametres[2] = max_ai_elagage
+        
+        self.min_ai_parametres[0] = self.LIST_DIFFICULTY[min_ai_difficulty][0]
+        self.min_ai_parametres[1] = self.LIST_DIFFICULTY[min_ai_difficulty][1]
+        self.min_ai_parametres[2] = min_ai_elagage
+               
         self.game_loop(True)
         return (self.number_circle_max_player, self.number_circle_min_player)
         
-        
+    def is_game_over(self, available_moves):
+        """Check if the game is over based on available moves."""
+        return len(available_moves) == 0  
     
                     
         
