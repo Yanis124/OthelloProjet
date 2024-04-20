@@ -38,10 +38,6 @@ def min_value(state, depth, alpha, beta, max_player_color, min_player_color, uti
             return v
         
     return v
-
-
-
-
     
 def simulate_move(state, move, player_color):
     """simulate a move to obtain a new game state"""

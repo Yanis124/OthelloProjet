@@ -3,10 +3,12 @@ from src.Game.othello_game import OthelloGame
 class Tournament:
     """simulate a tournament between the AI with different difficulty levels"""
     
-    def __init__(self, first_ai_difficulty, second_ai_difficulty):
+    def __init__(self, first_ai_difficulty, second_ai_difficulty, first_ai_elagage, second_ai_elagage):
         
         self.first_ai_difficulty = first_ai_difficulty
         self.second_ai_difficulty = second_ai_difficulty
+        self.first_ai_elagage = first_ai_elagage
+        self.second_ai_elagage = second_ai_elagage
         self.game = None
         
     def ai_vs_ai(self, file_path):
@@ -17,7 +19,7 @@ class Tournament:
         self.first_ai_difficulty = self.first_ai_difficulty
         self.second_ai_difficulty = self.second_ai_difficulty
         
-        result = self.game.ai_vs_ai(self.first_ai_difficulty, self.second_ai_difficulty)
+        result = self.game.ai_vs_ai(self.first_ai_difficulty, self.second_ai_difficulty, self.first_ai_elagage, self.second_ai_elagage)
         print("result: ", result)
         
         winner = self.first_ai_difficulty if result[0] > result[1] else (self.second_ai_difficulty if result[0] < result[1] else None)
@@ -32,7 +34,7 @@ class Tournament:
         for i in range(nb_games):
             self.ai_vs_ai(file_path)
 
-tournament = Tournament(0,2)
-tournament.simulate_tournament("src/performance/easy_vs_hard.txt", 110)
+tournament = Tournament(2, 2, False, False)
+tournament.simulate_tournament("src/performance/easy_vs_hard.txt", 1)
     
         
