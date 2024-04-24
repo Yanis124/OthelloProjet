@@ -4,20 +4,15 @@ from copy import deepcopy
 from src.Game.game_utils_fonction import get_available_moves
 from src.Game.game_utils_fonction import is_game_over, get_flip_circles
 
-max_ai_explored_node = 0
-min_ai_explored_node = 0
-file_path_node_explored = "src/performance/explored_nodes.txt"
 
-
-def max_value(state, depth, alpha, beta, max_player_color, min_player_color, current_player, utility_function, use_alpha_beta=True):
+def max_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta=True):
     if depth <= 0 or is_game_over(state):
         return utility_function(state, max_player_color, min_player_color)
     
     v = float('-inf')
     for move in get_available_moves(state, max_player_color):
         new_state = simulate_move(state, move, max_player_color)
-        set_number_explored_node(current_player, max_player_color)
-        v = max(v, min_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, current_player, utility_function, use_alpha_beta)) 
+        v = max(v, min_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta)) 
         #print(move, depth)
         alpha = max(alpha, v)
         
@@ -27,15 +22,14 @@ def max_value(state, depth, alpha, beta, max_player_color, min_player_color, cur
 
     return v
 
-def min_value(state, depth, alpha, beta, max_player_color, min_player_color, current_player, utility_function, use_alpha_beta=True):
+def min_value(state, depth, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta=True):
     if depth <= 0 or is_game_over(state):
         return utility_function(state, max_player_color, min_player_color)
     
     v = float('inf')
     for move in get_available_moves(state, min_player_color):
         new_state = simulate_move(state, move, min_player_color)
-        set_number_explored_node(current_player, max_player_color)
-        v = min(v, max_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, current_player, utility_function, use_alpha_beta)) 
+        v = min(v, max_value(new_state, depth-1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta)) 
         #print(move, depth)
         
         beta = min(beta, v)
@@ -64,31 +58,23 @@ def simulate_move(state, move, player_color):
 def get_best_move(state, max_player_color, min_player_color, current_player_color, depth, utility_function, use_alpha_beta=True):
     best_move = None
     best_moves = []
-    global max_ai_explored_node
-    global min_ai_explored_node
-    global file_path_node_explored
-    max_ai_explored_node = 0
-    min_ai_explored_node = 0
     
-
     for move in get_available_moves(state, current_player_color):
         new_state = simulate_move(state, move, current_player_color)
-        
-        set_number_explored_node(current_player_color, max_player_color)
         
         # init alpha et beta seulement si use_alpha_beta est True
         alpha = float('-inf') 
         beta = float('inf') 
          
         if current_player_color == max_player_color:
-            eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, current_player_color, utility_function, use_alpha_beta) # appel de min_value pour le joueur min
+            eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de min_value pour le joueur min
         else:
-            eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, current_player_color, utility_function, use_alpha_beta) # appel de max_value pour le joueur max 
+            eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de max_value pour le joueur max 
         
         if current_player_color == max_player_color:
-            eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color,current_player_color, utility_function, use_alpha_beta) # appel de min_value pour le joueur min
+            eval = min_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de min_value pour le joueur min
         else:
-            eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, current_player_color, utility_function, use_alpha_beta) # appel de max_value pour le joueur max
+            eval = max_value(new_state, depth - 1, alpha, beta, max_player_color, min_player_color, utility_function, use_alpha_beta) # appel de max_value pour le joueur max
         
         best_moves.append((move, eval))  # Adds the movement and its rating to the list of best movements
     
@@ -99,17 +85,6 @@ def get_best_move(state, max_player_color, min_player_color, current_player_colo
 
     best_move = random.choice(best_moves)[0]  # Choose randomly from the best movements
     
-    if current_player_color == max_player_color:
-        print(f"AI {current_player_color} explored {max_ai_explored_node} nodes")
-        
-        with open(file_path_node_explored, "a") as file:
-            file.write(f"{max_ai_explored_node, 0, use_alpha_beta}\n")
-    else:   
-        print(f"AI {current_player_color} explored {min_ai_explored_node} nodes")
-        
-        with open(file_path_node_explored, "a") as file:
-            file.write(f"{min_ai_explored_node, 1, use_alpha_beta}\n")
-
     return best_move
 
 def select_highest_occurrences(lst):
@@ -119,13 +94,3 @@ def select_highest_occurrences(lst):
 def select_lowest_occurrences(lst):
     min_value = min(item[1] for item in lst)
     return [item for item in lst if item[1] == min_value]
-
-def set_number_explored_node(current_player, max_player_color):
-    """set the number of explored nodes for the current player"""
-    global max_ai_explored_node
-    global min_ai_explored_node
-    
-    if current_player == max_player_color :
-        max_ai_explored_node +=1
-    else:
-        min_ai_explored_node +=1

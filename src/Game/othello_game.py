@@ -31,9 +31,6 @@ class OthelloGame:
         self.min_ai_parametres = [None, None, True] 
         self.available_moves = [] 
         
-        self.max_ai_explored_node = 0
-        self.min_explored_node = 0
-        
         if canvas is not None:
             self.canvas = canvas
             self.grid = Grid(canvas)
