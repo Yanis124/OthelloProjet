@@ -44,6 +44,11 @@ class OthelloGame:
             
         self.initialize_game() 
         
+    def count_pieces(self):
+        """Count the number of pieces for each player on the grid."""
+        self.number_circle_max_player = sum(row.count(self.max_player_color) for row in self.grid.state)
+        self.number_circle_min_player = sum(row.count(self.min_player_color) for row in self.grid.state)
+        
     def initialize_game(self):
         """configure the initial state of the game and draw the initial pieces on the grid"""
         
@@ -184,10 +189,10 @@ class OthelloGame:
         elif self.current_player_color == self.min_player_color and self.game_mode == "ai_vs_ai": #ai vs ai (first ai is the max player and the second ai is the min player)
             self.play_best_move(self.min_ai_parametres[0], self.min_ai_parametres[1], use_alpha_beta=self.min_ai_parametres[2])
                     
-    def play_best_move(self, depth, utility_function, use_alpha_beta):
+    def play_best_move(self, depth, utility_function):
         """play the best move for the AI"""
         
-        ai_move = get_best_move(self.grid.state, min_player_color = self.min_player_color, max_player_color = self.max_player_color, current_player_color = self.current_player_color, depth = depth, utility_function = utility_function, use_alpha_beta = use_alpha_beta)
+        ai_move = get_best_move(self.grid.state, min_player_color=self.min_player_color, max_player_color=self.max_player_color, current_player_color=self.current_player_color, depth=depth, utility_function=utility_function, use_alpha_beta=True)
         print(ai_move)
         if ai_move is None:
             self.game_loop(False)
@@ -195,7 +200,7 @@ class OthelloGame:
         self.make_move(ai_move[0], ai_move[1])
 
      
-    def ai_vs_ai(self, max_ai_difficulty, min_ai_difficulty, max_ai_elagage, min_ai_elagage):
+    def ai_vs_ai(self, max_ai_difficulty, min_ai_difficulty):
         """run a game between two ai"""
         
         self.game_mode = "ai_vs_ai"
@@ -213,7 +218,9 @@ class OthelloGame:
         self.game_loop(True)
         return (self.number_circle_max_player, self.number_circle_min_player)
         
-        
+    def is_game_over(self, available_moves):
+        """Check if the game is over based on available moves."""
+        return len(available_moves) == 0  
     
                     
         
