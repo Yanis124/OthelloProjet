@@ -5,7 +5,6 @@ from src.ai.heuristics.easy_ai_eval import easy_ai_utility
 from src.ai.heuristics.normal_ai_eval import normal_ai_utility
 from src.ai.heuristics.hard_ai_eval import hard_ai_utility
 
-import time
 from tkinter import Tk
 
 class OthelloGame:
@@ -31,6 +30,9 @@ class OthelloGame:
         self.max_ai_parametres = [None, None, True]
         self.min_ai_parametres = [None, None, True] 
         self.available_moves = [] 
+        
+        self.max_ai_explored_node = 0
+        self.min_explored_node = 0
         
         if canvas is not None:
             self.canvas = canvas

@@ -33,8 +33,17 @@ class Tournament:
         
         for i in range(nb_games):
             self.ai_vs_ai(file_path)
+            
+    def simulate_game(self, file_path):
+        """simulate a game between two to determine the number of node explored"""
+        
+        self.game = OthelloGame(None)
+        
+        
+        self.game.ai_vs_ai(self.first_ai_difficulty, self.second_ai_difficulty, self.first_ai_elagage, self.second_ai_elagage)
+        
 
 tournament = Tournament(2, 2, False, False)
-tournament.simulate_tournament("src/performance/easy_vs_hard.txt", 1)
+tournament.simulate_game("tournament.txt")
     
         
