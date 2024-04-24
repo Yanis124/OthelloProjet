@@ -19,7 +19,7 @@ class Tournament:
         self.first_ai_difficulty = self.first_ai_difficulty
         self.second_ai_difficulty = self.second_ai_difficulty
         
-        result = self.game.ai_vs_ai(self.first_ai_difficulty, self.second_ai_difficulty, self.first_ai_elagage, self.second_ai_elagage)
+        result = self.game.ai_vs_ai()
         print("result: ", result)
         
         winner = self.first_ai_difficulty if result[0] > result[1] else (self.second_ai_difficulty if result[0] < result[1] else None)
@@ -38,7 +38,6 @@ class Tournament:
         """simulate a game between two to determine the number of node explored"""
         
         self.game = OthelloGame(None)
-        
         
         self.game.ai_vs_ai(self.first_ai_difficulty, self.second_ai_difficulty, self.first_ai_elagage, self.second_ai_elagage)
         
