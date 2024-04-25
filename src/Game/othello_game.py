@@ -187,7 +187,12 @@ class OthelloGame:
     def play_best_move(self, depth, utility_function, use_alpha_beta):
         """play the best move for the AI"""
         
-        ai_move = get_best_move(self.grid.state, min_player_color = self.min_player_color, max_player_color = self.max_player_color, current_player_color = self.current_player_color, depth = depth, utility_function = utility_function, use_alpha_beta = use_alpha_beta)
+        ai_move = get_best_move(self.grid.state,
+                                min_player_color = self.min_player_color,
+                                max_player_color = self.max_player_color,
+                                current_player_color = self.current_player_color,
+                                depth = depth, utility_function = utility_function,
+                                use_alpha_beta = False)
         print(ai_move)
         if ai_move is None:
             self.game_loop(False)
