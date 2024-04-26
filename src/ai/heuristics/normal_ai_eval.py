@@ -1,7 +1,7 @@
 from src.ai.heuristics.easy_ai_eval import easy_ai_utility
 from src.ai.heuristics.heuristique_utils_fonctions import circle_count
 
-def normal_ai_utility(state, max_player_color, min_player_color):
+def moderate_eval_function(state, max_player_color, min_player_color):
     """return the evaluation of a position"""
                 
     coins_parametres = circle_count(state, max_player_color, min_player_color)
