@@ -95,6 +95,6 @@ def plot_average_score_per_game(first_ai, second_ai, file_path):
 first_ai = 1
 second_ai = 2
 file_path = 'src/performance/'+dict_ai[first_ai]+"_vs_"+dict_ai[second_ai]+'.txt'
-plot_average_score_per_game(first_ai, second_ai, file_path)
-# total_match, average_win_score_first_ai, average_win_score_second_ai, total_draw = get_wins_result_tournament(file_path, first_ai, second_ai)
-# draw_circle_graph(first_ai, second_ai,total_match , average_win_score_first_ai, average_win_score_second_ai, total_draw)
+#plot_average_score_per_game(first_ai, second_ai, file_path)
+total_match, average_win_score_first_ai, average_win_score_second_ai, total_draw = get_wins_result_tournament(file_path, first_ai, second_ai)
+draw_circle_graph(first_ai, second_ai,total_match , average_win_score_first_ai, average_win_score_second_ai, total_draw)
