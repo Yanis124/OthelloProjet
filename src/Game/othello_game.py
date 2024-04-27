@@ -1,9 +1,9 @@
 from src.GUI.components.grid import Grid
 from src.Game.game_utils_fonction import get_available_moves, is_valid_move, get_flip_circles, is_game_over
-from src.ai.ai.minimax import get_best_move
-from src.ai.heuristics.easy_ai_eval import easy_ai_utility
-from src.ai.heuristics.normal_ai_eval import normal_ai_utility
-from src.ai.heuristics.hard_ai_eval import hard_ai_utility
+from src.ai.ai.minimax import minimax_decision
+from src.ai.heuristics.easy_ai_eval import easy_eval_function
+from src.ai.heuristics.normal_ai_eval import moderate_eval_function
+from src.ai.heuristics.hard_ai_eval import hard_eval_function
 
 from tkinter import Tk
 
@@ -11,9 +11,9 @@ class OthelloGame:
     """ Class representing the logic of the Othello game ^^"""
     
     #AI constants (depth, utility_function, use alpha)
-    EASY_AI = (0, easy_ai_utility, True) 
-    NORMAL_AI = (2, normal_ai_utility, True)
-    HARD_AI = (4, hard_ai_utility, True)
+    EASY_AI = (0, easy_eval_function, True) 
+    NORMAL_AI = (2, moderate_eval_function, True)
+    HARD_AI = (4, hard_eval_function, True)
     
     LIST_DIFFICULTY = [EASY_AI, NORMAL_AI, HARD_AI]
 
@@ -184,7 +184,7 @@ class OthelloGame:
     def play_best_move(self, depth, utility_function, use_alpha_beta):
         """play the best move for the AI"""
         
-        ai_move = get_best_move(self.grid.state, min_player_color = self.min_player_color, max_player_color = self.max_player_color, current_player_color = self.current_player_color, depth = depth, utility_function = utility_function, use_alpha_beta = use_alpha_beta)
+        ai_move = minimax_decision(self.grid.state, min_player_color = self.min_player_color, max_player_color = self.max_player_color, current_player_color = self.current_player_color, depth = depth, utility_function = utility_function, use_alpha_beta = use_alpha_beta)
         print(ai_move)
         if ai_move is None:
             self.game_loop(False)
