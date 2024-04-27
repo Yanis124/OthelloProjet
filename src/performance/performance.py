@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 
 dict_ai = {0: 'easy', 1: 'normal', 2: 'hard'}
-dict_ai_color = {0: '#1f77b4', 1: '#2ca02c', 2: '#ff7f0e'}
+dict_ai_color = {0: '#FFB6C1', 1: '#BAA8A8', 2: '#663366'}
 draw_color = '#808080'
 
 def get_wins_result_tournament(file_path, first_ai, second_ai):
@@ -30,7 +30,7 @@ def get_wins_result_tournament(file_path, first_ai, second_ai):
         
         total_matches += 1
         
-    return (total_matches, total_wins_first_ai, total_wins_second_ai, total_draws)
+    return total_matches, total_wins_first_ai, total_wins_second_ai, total_draws
         
 def draw_circle_graph(first_ai, second_ai, total_matches, total_wins_first_ai, total_wins_second_ai, total_draws):
     """draw a circle graph with the percentage of wins and draws for each AI"""
@@ -44,9 +44,11 @@ def draw_circle_graph(first_ai, second_ai, total_matches, total_wins_first_ai, t
     sizes = [win_percentage_first_ai, win_percentage_second_ai, draw_percentage]
     colors = [dict_ai_color[first_ai], dict_ai_color[second_ai], draw_color ]
     explode = (0.1, 0, 0)  
-    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', textprops={'color': '#000000'}, startangle=140)
     plt.axis('equal')  
     plt.title('AI Wins Percentage'+ '\n' + dict_ai[first_ai] + ' vs ' + dict_ai[second_ai] + ' - ' + str(total_matches) + ' matches')
+    
+    
     plt.show()
     
 def get_average_score_per_game(file_path, first_ai, second_ai):
@@ -90,7 +92,9 @@ def plot_average_score_per_game(first_ai, second_ai, file_path):
     plt.show()
 
 # Example usage
-first_ai = 0 
-second_ai = 1
+first_ai = 1
+second_ai = 2
 file_path = 'src/performance/'+dict_ai[first_ai]+"_vs_"+dict_ai[second_ai]+'.txt'
 plot_average_score_per_game(first_ai, second_ai, file_path)
+# total_match, average_win_score_first_ai, average_win_score_second_ai, total_draw = get_wins_result_tournament(file_path, first_ai, second_ai)
+# draw_circle_graph(first_ai, second_ai,total_match , average_win_score_first_ai, average_win_score_second_ai, total_draw)
