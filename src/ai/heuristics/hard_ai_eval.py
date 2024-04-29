@@ -17,8 +17,9 @@ def calculate_heuristic_score(max_player_parametre, min_player_parametre):
     """
 
     if (max_player_parametre + min_player_parametre == 0) or (max_player_parametre - min_player_parametre == 0):
-        return 0
+        return 0  
 
+    # calculate the score 
     return 100 * (max_player_parametre - min_player_parametre) / abs(max_player_parametre + min_player_parametre)
 
 
@@ -37,14 +38,18 @@ def hard_eval_function(state, max_player_color, min_player_color):
     Returns:
     int: the utility value of the game state for the hard AI player
     """
+    
+    # calculate the scores for each heuristic
     max_coins, min_coins = circle_count(state, max_player_color, min_player_color)
     max_mobility, min_mobility = mobility(state, max_player_color, min_player_color)
     max_corners, min_corners = circle_count_corner(state, max_player_color, min_player_color)
     max_stability, min_stability = stability(state, max_player_color, min_player_color)
 
+    # calculate the heuristic scores using the calculate_heuristic_score function
     coin_score = calculate_heuristique_score(max_coins, min_coins)
     mobility_score = calculate_heuristique_score(max_mobility, min_mobility)
     corner_score = calculate_heuristique_score(max_corners, min_corners)
     stability_score = calculate_heuristique_score(max_stability, min_stability)
 
+    # return the sum of all heuristic scores as the utility value for the hard AI player
     return coin_score + mobility_score + corner_score + stability_score

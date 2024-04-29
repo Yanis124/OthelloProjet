@@ -10,17 +10,16 @@ values = [
         [4, -3, 2, 2, 2, 2, -3, 4]
 ]
 
-def easy_ai_utility(state, max_player_color, min_player_color):
-    """return the evaluation of a position"""
+def easy_eval_function(state, max_player_color, min_player_color):
+    """Return the evaluation of a position"""
     
-    eval = 0
+    eval = 0 
     
-    for i in range(0,8):
-        for j in range(0,8):
-            if state[i][j] == max_player_color:
-                eval += values[i][j]
-            elif state[i][j] == min_player_color:
-                eval -= values[i][j]
+    for i in range(0, 8):
+        for j in range(0, 8):
+            if state[i][j] == max_player_color:  # if the cell belongs to the max player
+                eval += values[i][j]  # add the value of the cell to the evaluation
+            elif state[i][j] == min_player_color:  # if the cell belongs to the min player
+                eval -= values[i][j]  # subtract the value of the cell from the evaluation
      
-    return eval
-
+    return eval  # return the evaluation
