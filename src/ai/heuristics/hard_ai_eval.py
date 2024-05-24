@@ -46,10 +46,10 @@ def hard_eval_function(state, max_player_color, min_player_color):
     max_stability, min_stability = stability(state, max_player_color, min_player_color)
 
     # calculate the heuristic scores using the calculate_heuristic_score function
-    coin_score = calculate_heuristique_score(max_coins, min_coins)
-    mobility_score = calculate_heuristique_score(max_mobility, min_mobility)
-    corner_score = calculate_heuristique_score(max_corners, min_corners)
-    stability_score = calculate_heuristique_score(max_stability, min_stability)
+    coin_score = calculate_heuristic_score(max_coins, min_coins)
+    mobility_score = calculate_heuristic_score(max_mobility, min_mobility)
+    corner_score = calculate_heuristic_score(max_corners, min_corners)
+    stability_score = calculate_heuristic_score(max_stability, min_stability)
 
     # return the sum of all heuristic scores as the utility value for the hard AI player
     return coin_score + mobility_score + corner_score + stability_score

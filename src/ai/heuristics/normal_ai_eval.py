@@ -1,4 +1,4 @@
-from src.ai.heuristics.easy_ai_eval import easy_ai_utility
+from src.ai.heuristics.easy_ai_eval import easy_eval_function
 from src.ai.heuristics.heuristique_utils_fonctions import circle_count
 
 def moderate_eval_function(state, max_player_color, min_player_color):
@@ -17,6 +17,6 @@ def moderate_eval_function(state, max_player_color, min_player_color):
     int: the evaluation of the position
     """
     coins_parametres = circle_count(state, max_player_color, min_player_color)  # get the number of circles for each player
-    eval = easy_ai_utility(state, max_player_color, min_player_color)  # get the evaluation using the easy AI utility function
+    eval = easy_eval_function(state, max_player_color, min_player_color)  # get the evaluation using the easy AI utility function
 
     return eval + (coins_parametres[0] - coins_parametres[1])  # return the combined evaluation
